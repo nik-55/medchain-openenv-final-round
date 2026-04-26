@@ -1,0 +1,630 @@
+[INFO] 19:00:17 Starting 9 episode(s)  seeds=[0, 1, 2]  difficulties=['light', 'medium', 'heavy']  rollouts=1  model=gpt-5.4-mini
+[INFO] 19:00:17 ─── Episode 1 / 9  seed=0  diff=light ───
+[INFO] 19:00:17 [ep1] seed=0 diff=light started
+[DEBUG] 19:00:17 [ep1] step 1/200  msgs=2
+[DEBUG] 19:00:18 [ep1] step 1 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:00:19 [ep1] step 2/200  msgs=4
+[DEBUG] 19:00:20 [ep1] step 2 — view_requests({})
+[DEBUG] 19:00:20 [ep1] step 2 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:00:20 [ep1] step 2 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:00:21 [ep1] step 3/200  msgs=8
+[DEBUG] 19:00:24 [ep1] step 3 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 12, 'priority': 'standard'})
+[DEBUG] 19:00:24 [ep1] step 3 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:00:24 [ep1] step 3 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-FFP', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:00:24 [ep1] step 3 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'IV-SAL-500', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:00:24 [ep1] step 3 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'ANTIBIO-01', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:00:24 [ep1] step 3 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'OXY-MASK', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:00:24 [ep1] step 3 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'SYR-10', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:00:24 [ep1] step 3 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'GLOVE-001', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:00:24 [ep1] step 3 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'MASK-001', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:00:24 [ep1] step 3 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'GAUZE-01', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:00:24 [ep1] step 4/200  msgs=19
+[DEBUG] 19:00:26 [ep1] step 4 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":34,"ANTIBIO-01":22,"OXY-MASK":19,"SYR-10":76,"GLOVE-001":47},"ward_er":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":35,"ANTIBIO-01":27,"OXY-MASK":28,"SYR-10":86,"GLOVE-001":58,"GAUZE-01":72},"ward_general":{"IV-SAL-500":51,"ANTIBIO-01":24,"SYR-10":125,"GLOVE-001":85,"MASK-001":101,"GAUZE-01":99}}'})
+[DEBUG] 19:00:27 [ep1] step 5/200  msgs=21
+[DEBUG] 19:00:27 [ep1] step 5 — advance_round({})
+[INFO] 19:00:28 [ep1] step 5 — round advanced; context reset
+[DEBUG] 19:00:28 [ep1] step 6/200  msgs=2
+[DEBUG] 19:00:29 [ep1] step 6 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:00:29 [ep1] step 6 — view_requests({})
+[DEBUG] 19:00:29 [ep1] step 6 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:00:29 [ep1] step 6 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:00:30 [ep1] step 7/200  msgs=7
+[DEBUG] 19:00:32 [ep1] step 7 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 1, 'priority': 'standard'})
+[DEBUG] 19:00:32 [ep1] step 7 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-FFP', 'destination_id': 'central_pharmacy', 'quantity': 3, 'priority': 'standard'})
+[DEBUG] 19:00:32 [ep1] step 7 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'IV-SAL-500', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:00:32 [ep1] step 7 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'ANTIBIO-01', 'destination_id': 'central_pharmacy', 'quantity': 25, 'priority': 'standard'})
+[DEBUG] 19:00:32 [ep1] step 7 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'OXY-MASK', 'destination_id': 'central_pharmacy', 'quantity': 7, 'priority': 'standard'})
+[DEBUG] 19:00:32 [ep1] step 7 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'SYR-10', 'destination_id': 'central_pharmacy', 'quantity': 116, 'priority': 'standard'})
+[DEBUG] 19:00:32 [ep1] step 7 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'GLOVE-001', 'destination_id': 'central_pharmacy', 'quantity': 91, 'priority': 'standard'})
+[DEBUG] 19:00:32 [ep1] step 7 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'MASK-001', 'destination_id': 'central_pharmacy', 'quantity': 92, 'priority': 'standard'})
+[DEBUG] 19:00:32 [ep1] step 7 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'GAUZE-01', 'destination_id': 'central_pharmacy', 'quantity': 77, 'priority': 'standard'})
+[DEBUG] 19:00:33 [ep1] step 8/200  msgs=17
+[DEBUG] 19:00:35 [ep1] step 8 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":12,"BLOOD-PLT":5,"BLOOD-FFP":9,"IV-SAL-500":46,"ANTIBIO-01":26,"OXY-MASK":16,"SYR-10":76,"GLOVE-001":50},"ward_er":{"BLOOD-RBC":11,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":47,"ANTIBIO-01":27,"OXY-MASK":16,"SYR-10":82,"GLOVE-001":56,"GAUZE-01":77},"ward_general":{"IV-SAL-500":55,"ANTIBIO-01":36,"SYR-10":135,"GLOVE-001":57,"MASK-001":92,"GAUZE-01":1}}'})
+[DEBUG] 19:00:35 [ep1] step 9/200  msgs=19
+[DEBUG] 19:00:36 [ep1] step 9 — advance_round({})
+[INFO] 19:00:36 [ep1] step 9 — round advanced; context reset
+[DEBUG] 19:00:37 [ep1] step 10/200  msgs=2
+[DEBUG] 19:00:38 [ep1] step 10 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:00:38 [ep1] step 11/200  msgs=4
+[DEBUG] 19:00:39 [ep1] step 11 — view_requests({})
+[DEBUG] 19:00:39 [ep1] step 11 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:00:39 [ep1] step 11 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:00:40 [ep1] step 12/200  msgs=8
+[DEBUG] 19:00:41 [ep1] step 12 — query_erp({'table': 'inventory', 'location': 'central_pharmacy', 'sku': 'BLOOD-RBC'})
+[DEBUG] 19:00:42 [ep1] step 13/200  msgs=10
+[DEBUG] 19:00:43 [ep1] step 13 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 4, 'priority': 'standard'})
+[DEBUG] 19:00:44 [ep1] step 14/200  msgs=12
+[DEBUG] 19:00:45 [ep1] step 14 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 1, 'priority': 'standard'})
+[DEBUG] 19:00:45 [ep1] step 15/200  msgs=14
+[DEBUG] 19:00:47 [ep1] step 15 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":6,"IV-SAL-500":30,"ANTIBIO-01":22,"OXY-MASK":13,"SYR-10":70,"GLOVE-001":45},"ward_er":{"BLOOD-RBC":11,"BLOOD-PLT":6,"BLOOD-FFP":6,"IV-SAL-500":45,"ANTIBIO-01":24,"OXY-MASK":15,"SYR-10":80,"GLOVE-001":46,"GAUZE-01":60},"ward_general":{"IV-SAL-500":48,"ANTIBIO-01":33,"SYR-10":62,"GLOVE-001":46,"MASK-001":70,"GAUZE-01":90}}'})
+[DEBUG] 19:00:47 [ep1] step 16/200  msgs=16
+[DEBUG] 19:00:48 [ep1] step 16 — advance_round({})
+[INFO] 19:00:48 [ep1] step 16 — round advanced; context reset
+[DEBUG] 19:00:49 [ep1] step 17/200  msgs=2
+[DEBUG] 19:00:50 [ep1] step 17 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:00:50 [ep1] step 18/200  msgs=4
+[DEBUG] 19:00:51 [ep1] step 18 — view_requests({})
+[DEBUG] 19:00:51 [ep1] step 18 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:00:51 [ep1] step 18 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:00:52 [ep1] step 19/200  msgs=8
+[DEBUG] 19:00:53 [ep1] step 19 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 10, 'priority': 'standard'})
+[DEBUG] 19:00:53 [ep1] step 20/200  msgs=10
+[DEBUG] 19:00:54 [ep1] step 20 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 5, 'priority': 'standard'})
+[DEBUG] 19:00:55 [ep1] step 21/200  msgs=12
+[DEBUG] 19:00:56 [ep1] step 21 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-FFP', 'destination_id': 'central_pharmacy', 'quantity': 5, 'priority': 'standard'})
+[DEBUG] 19:00:57 [ep1] step 22/200  msgs=14
+[DEBUG] 19:01:00 [ep1] step 22 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'IV-SAL-500', 'destination_id': 'central_pharmacy', 'quantity': 155, 'priority': 'standard'})
+[DEBUG] 19:01:00 [ep1] step 23/200  msgs=16
+[DEBUG] 19:01:01 [ep1] step 23 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'ANTIBIO-01', 'destination_id': 'central_pharmacy', 'quantity': 47, 'priority': 'standard'})
+[DEBUG] 19:01:02 [ep1] step 24/200  msgs=18
+[DEBUG] 19:01:03 [ep1] step 24 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'OXY-MASK', 'destination_id': 'central_pharmacy', 'quantity': 57, 'priority': 'standard'})
+[DEBUG] 19:01:04 [ep1] step 25/200  msgs=20
+[DEBUG] 19:01:05 [ep1] step 25 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'SYR-10', 'destination_id': 'central_pharmacy', 'quantity': 94, 'priority': 'standard'})
+[DEBUG] 19:01:05 [ep1] step 26/200  msgs=22
+[DEBUG] 19:01:06 [ep1] step 26 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'GLOVE-001', 'destination_id': 'central_pharmacy', 'quantity': 59, 'priority': 'standard'})
+[DEBUG] 19:01:07 [ep1] step 27/200  msgs=24
+[DEBUG] 19:01:08 [ep1] step 27 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'GAUZE-01', 'destination_id': 'central_pharmacy', 'quantity': 140, 'priority': 'standard'})
+[DEBUG] 19:01:09 [ep1] step 28/200  msgs=26
+[DEBUG] 19:01:11 [ep1] step 28 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":13,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":36,"ANTIBIO-01":24,"OXY-MASK":18,"SYR-10":80,"GLOVE-001":54},"ward_er":{"BLOOD-RBC":14,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":41,"ANTIBIO-01":33,"OXY-MASK":16,"SYR-10":97,"GLOVE-001":50,"GAUZE-01":65},"ward_general":{"IV-SAL-500":39,"ANTIBIO-01":36,"SYR-10":87,"GLOVE-001":56,"MASK-001":66,"GAUZE-01":116}}'})
+[DEBUG] 19:01:12 [ep1] step 29/200  msgs=28
+[DEBUG] 19:01:13 [ep1] step 29 — advance_round({})
+[INFO] 19:01:13 [ep1] step 29 — round advanced; context reset
+[DEBUG] 19:01:13 [ep1] step 30/200  msgs=2
+[DEBUG] 19:01:15 [ep1] step 30 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:01:15 [ep1] step 30 — view_requests({})
+[DEBUG] 19:01:15 [ep1] step 30 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:01:15 [ep1] step 30 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:01:16 [ep1] step 31/200  msgs=7
+[DEBUG] 19:01:17 [ep1] step 31 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:01:17 [ep1] step 31 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:01:17 [ep1] step 31 — query_ward_history({'ward_id': 'ward_general', 'n_rounds': 3})
+[DEBUG] 19:01:17 [ep1] step 32/200  msgs=11
+[DEBUG] 19:01:19 [ep1] step 32 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":10,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":39,"ANTIBIO-01":30,"OXY-MASK":13,"SYR-10":74,"GLOVE-001":47},"ward_er":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":32,"ANTIBIO-01":28,"OXY-MASK":15,"SYR-10":99,"GLOVE-001":50,"GAUZE-01":66},"ward_general":{"IV-SAL-500":51,"ANTIBIO-01":28,"SYR-10":87,"GLOVE-001":69,"MASK-001":86,"GAUZE-01":67}}'})
+[DEBUG] 19:01:20 [ep1] step 33/200  msgs=13
+[DEBUG] 19:01:21 [ep1] step 33 — advance_round({})
+[INFO] 19:01:21 [ep1] step 33 — round advanced; context reset
+[DEBUG] 19:01:21 [ep1] step 34/200  msgs=2
+[DEBUG] 19:01:23 [ep1] step 34 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:01:23 [ep1] step 35/200  msgs=4
+[DEBUG] 19:01:25 [ep1] step 35 — view_requests({})
+[DEBUG] 19:01:25 [ep1] step 35 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:01:25 [ep1] step 35 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:01:25 [ep1] step 36/200  msgs=8
+[DEBUG] 19:01:27 [ep1] step 36 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":10,"BLOOD-PLT":5,"BLOOD-FFP":5,"IV-SAL-500":48,"ANTIBIO-01":25,"OXY-MASK":12,"SYR-10":91,"GLOVE-001":59},"ward_er":{"BLOOD-RBC":10,"BLOOD-PLT":5,"BLOOD-FFP":5,"IV-SAL-500":56,"ANTIBIO-01":23,"OXY-MASK":15,"SYR-10":80,"GLOVE-001":46,"GAUZE-01":76},"ward_general":{"IV-SAL-500":40,"ANTIBIO-01":19,"SYR-10":143,"GLOVE-001":51,"MASK-001":85,"GAUZE-01":76}}'})
+[DEBUG] 19:01:28 [ep1] step 37/200  msgs=10
+[DEBUG] 19:01:29 [ep1] step 37 — advance_round({})
+[INFO] 19:01:29 [ep1] step 37 — round advanced; context reset
+[DEBUG] 19:01:29 [ep1] step 38/200  msgs=2
+[DEBUG] 19:01:30 [ep1] step 38 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:01:31 [ep1] step 39/200  msgs=4
+[DEBUG] 19:01:32 [ep1] step 39 — view_requests({})
+[DEBUG] 19:01:32 [ep1] step 39 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:01:32 [ep1] step 39 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:01:32 [ep1] step 39 — query_supplier({'supplier_id': 'BACKUP-B'})
+[DEBUG] 19:01:32 [ep1] step 39 — query_supplier({'supplier_id': 'FASTMED'})
+[DEBUG] 19:01:33 [ep1] step 40/200  msgs=10
+[DEBUG] 19:01:35 [ep1] step 40 — submit_po({'supplier_id': 'FASTMED', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 12, 'priority': 'expedited'})
+[DEBUG] 19:01:35 [ep1] step 40 — submit_po({'supplier_id': 'FASTMED', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 6, 'priority': 'expedited'})
+[DEBUG] 19:01:35 [ep1] step 40 — submit_po({'supplier_id': 'FASTMED', 'product_id': 'BLOOD-FFP', 'destination_id': 'central_pharmacy', 'quantity': 8, 'priority': 'expedited'})
+[DEBUG] 19:01:35 [ep1] step 40 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'IV-SAL-500', 'destination_id': 'central_pharmacy', 'quantity': 109, 'priority': 'standard'})
+[DEBUG] 19:01:35 [ep1] step 40 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'ANTIBIO-01', 'destination_id': 'central_pharmacy', 'quantity': 72, 'priority': 'standard'})
+[DEBUG] 19:01:35 [ep1] step 40 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'OXY-MASK', 'destination_id': 'central_pharmacy', 'quantity': 48, 'priority': 'standard'})
+[DEBUG] 19:01:35 [ep1] step 40 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'SYR-10', 'destination_id': 'central_pharmacy', 'quantity': 210, 'priority': 'standard'})
+[DEBUG] 19:01:35 [ep1] step 40 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'GLOVE-001', 'destination_id': 'central_pharmacy', 'quantity': 150, 'priority': 'standard'})
+[DEBUG] 19:01:35 [ep1] step 40 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'MASK-001', 'destination_id': 'central_pharmacy', 'quantity': 60, 'priority': 'standard'})
+[DEBUG] 19:01:35 [ep1] step 40 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'GAUZE-01', 'destination_id': 'central_pharmacy', 'quantity': 140, 'priority': 'standard'})
+[DEBUG] 19:01:36 [ep1] step 41/200  msgs=21
+[DEBUG] 19:01:38 [ep1] step 41 — file_justification({'ticket_id': 'BOT-0022', 'reason': 'Supplier disruption is active and MEDLINE lead time is extended to 5 days. BLOOD-RBC is critical for ICU/ER continuity; expedited FASTMED replenishment is required to prevent stockout before the next cycle.'})
+[DEBUG] 19:01:38 [ep1] step 41 — file_justification({'ticket_id': 'BOT-0024', 'reason': 'Supplier disruption is active and MEDLINE lead time is extended to 5 days. BLOOD-PLT is critical for ICU/ER continuity; expedited FASTMED replenishment is required to prevent stockout before the next cycle.'})
+[DEBUG] 19:01:38 [ep1] step 41 — file_justification({'ticket_id': 'BOT-0026', 'reason': 'Supplier disruption is active and MEDLINE lead time is extended to 5 days. BLOOD-FFP is critical for ICU/ER continuity; expedited FASTMED replenishment is required to prevent stockout before the next cycle.'})
+[DEBUG] 19:01:38 [ep1] step 42/200  msgs=25
+[DEBUG] 19:01:40 [ep1] step 42 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":39,"ANTIBIO-01":26,"OXY-MASK":18,"SYR-10":84,"GLOVE-001":43},"ward_er":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":43,"ANTIBIO-01":22,"OXY-MASK":18,"SYR-10":75,"GLOVE-001":48,"GAUZE-01":68},"ward_general":{"IV-SAL-500":56,"ANTIBIO-01":27,"SYR-10":96,"GLOVE-001":48,"MASK-001":60,"GAUZE-01":111}}'})
+[DEBUG] 19:01:41 [ep1] step 43/200  msgs=27
+[DEBUG] 19:01:42 [ep1] step 43 — advance_round({})
+[INFO] 19:01:42 [ep1] step 43 — round advanced; context reset
+[DEBUG] 19:01:43 [ep1] step 44/200  msgs=2
+[DEBUG] 19:01:44 [ep1] step 44 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:01:44 [ep1] step 44 — view_requests({})
+[DEBUG] 19:01:44 [ep1] step 44 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:01:44 [ep1] step 44 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:01:45 [ep1] step 45/200  msgs=7
+[DEBUG] 19:01:46 [ep1] step 45 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:01:46 [ep1] step 45 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:01:46 [ep1] step 45 — query_ward_history({'ward_id': 'ward_general', 'n_rounds': 3})
+[DEBUG] 19:01:47 [ep1] step 46/200  msgs=11
+[DEBUG] 19:01:49 [ep1] step 46 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":43,"ANTIBIO-01":25,"OXY-MASK":14,"SYR-10":79,"GLOVE-001":50},"ward_er":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":45,"ANTIBIO-01":23,"OXY-MASK":15,"SYR-10":75,"GLOVE-001":50,"GAUZE-01":65},"ward_general":{"IV-SAL-500":45,"ANTIBIO-01":24,"SYR-10":90,"GLOVE-001":50,"MASK-001":50,"GAUZE-01":70}}'})
+[DEBUG] 19:01:49 [ep1] step 47/200  msgs=13
+[DEBUG] 19:01:50 [ep1] step 47 — advance_round({})
+[INFO] 19:01:50 [ep1] seed=0 diff=light — done=True reward=0.7045 steps=47 elapsed=93.4s
+[INFO] 19:01:50 ─── Episode 2 / 9  seed=0  diff=medium ───
+[INFO] 19:01:50 [ep2] seed=0 diff=medium started
+[DEBUG] 19:01:50 [ep2] step 1/200  msgs=2
+[DEBUG] 19:01:51 [ep2] step 1 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:01:52 [ep2] step 2/200  msgs=4
+[DEBUG] 19:01:53 [ep2] step 2 — view_requests({})
+[DEBUG] 19:01:53 [ep2] step 3/200  msgs=6
+[DEBUG] 19:01:56 [ep2] step 3 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:01:56 [ep2] step 3 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:01:56 [ep2] step 4/200  msgs=9
+[DEBUG] 19:01:58 [ep2] step 4 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":34,"ANTIBIO-01":22,"OXY-MASK":19,"SYR-10":76,"GLOVE-001":47},"ward_er":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":35,"ANTIBIO-01":27,"OXY-MASK":28,"SYR-10":86,"GLOVE-001":58,"GAUZE-01":72},"ward_general":{"IV-SAL-500":51,"ANTIBIO-01":33,"SYR-10":125,"GLOVE-001":85,"MASK-001":101,"GAUZE-01":99}}'})
+[DEBUG] 19:01:58 [ep2] step 5/200  msgs=11
+[DEBUG] 19:01:59 [ep2] step 5 — advance_round({})
+[INFO] 19:01:59 [ep2] step 5 — round advanced; context reset
+[DEBUG] 19:02:00 [ep2] step 6/200  msgs=2
+[DEBUG] 19:02:01 [ep2] step 6 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:02:01 [ep2] step 6 — view_requests({})
+[DEBUG] 19:02:01 [ep2] step 6 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:02:01 [ep2] step 6 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:02:01 [ep2] step 7/200  msgs=7
+[DEBUG] 19:02:03 [ep2] step 7 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":12,"BLOOD-PLT":5,"BLOOD-FFP":9,"IV-SAL-500":46,"ANTIBIO-01":26,"OXY-MASK":16,"SYR-10":76,"GLOVE-001":50},"ward_er":{"BLOOD-RBC":23,"BLOOD-PLT":12,"BLOOD-FFP":15,"IV-SAL-500":95,"ANTIBIO-01":54,"OXY-MASK":33,"SYR-10":163,"GLOVE-001":113,"GAUZE-01":155},"ward_general":{"IV-SAL-500":55,"ANTIBIO-01":36,"SYR-10":135,"GLOVE-001":57,"MASK-001":92,"GAUZE-01":0}}'})
+[DEBUG] 19:02:04 [ep2] step 8/200  msgs=9
+[DEBUG] 19:02:05 [ep2] step 8 — advance_round({})
+[INFO] 19:02:05 [ep2] step 8 — round advanced; context reset
+[DEBUG] 19:02:05 [ep2] step 9/200  msgs=2
+[DEBUG] 19:02:06 [ep2] step 9 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:02:06 [ep2] step 9 — view_requests({})
+[DEBUG] 19:02:06 [ep2] step 9 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:02:06 [ep2] step 9 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:02:07 [ep2] step 10/200  msgs=7
+[DEBUG] 19:02:08 [ep2] step 10 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:02:08 [ep2] step 10 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:02:08 [ep2] step 10 — query_ward_history({'ward_id': 'ward_general', 'n_rounds': 3})
+[DEBUG] 19:02:09 [ep2] step 11/200  msgs=11
+[DEBUG] 19:02:10 [ep2] step 11 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 11, 'priority': 'standard'})
+[DEBUG] 19:02:11 [ep2] step 12/200  msgs=13
+[DEBUG] 19:02:13 [ep2] step 12 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 3, 'priority': 'standard'})
+[DEBUG] 19:02:13 [ep2] step 13/200  msgs=15
+[DEBUG] 19:02:14 [ep2] step 13 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-FFP', 'destination_id': 'central_pharmacy', 'quantity': 8, 'priority': 'standard'})
+[DEBUG] 19:02:15 [ep2] step 14/200  msgs=17
+[DEBUG] 19:02:17 [ep2] step 14 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'IV-SAL-500', 'destination_id': 'central_pharmacy', 'quantity': 44, 'priority': 'standard'})
+[DEBUG] 19:02:17 [ep2] step 14 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'ANTIBIO-01', 'destination_id': 'central_pharmacy', 'quantity': 72, 'priority': 'standard'})
+[DEBUG] 19:02:17 [ep2] step 14 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'OXY-MASK', 'destination_id': 'central_pharmacy', 'quantity': 40, 'priority': 'standard'})
+[DEBUG] 19:02:17 [ep2] step 14 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'SYR-10', 'destination_id': 'central_pharmacy', 'quantity': 210, 'priority': 'standard'})
+[DEBUG] 19:02:17 [ep2] step 14 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'GLOVE-001', 'destination_id': 'central_pharmacy', 'quantity': 150, 'priority': 'standard'})
+[DEBUG] 19:02:17 [ep2] step 14 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'MASK-001', 'destination_id': 'central_pharmacy', 'quantity': 60, 'priority': 'standard'})
+[DEBUG] 19:02:17 [ep2] step 14 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'GAUZE-01', 'destination_id': 'central_pharmacy', 'quantity': 140, 'priority': 'standard'})
+[DEBUG] 19:02:18 [ep2] step 15/200  msgs=25
+[DEBUG] 19:02:19 [ep2] step 15 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":13,"BLOOD-PLT":7,"BLOOD-FFP":7,"IV-SAL-500":34,"ANTIBIO-01":25,"OXY-MASK":15,"SYR-10":77,"GLOVE-001":50},"ward_er":{"BLOOD-RBC":13,"BLOOD-PLT":7,"BLOOD-FFP":7,"IV-SAL-500":52,"ANTIBIO-01":27,"OXY-MASK":17,"SYR-10":92,"GLOVE-001":53,"GAUZE-01":70},"ward_general":{"IV-SAL-500":55,"ANTIBIO-01":38,"SYR-10":100,"GLOVE-001":73,"MASK-001":88,"GAUZE-01":70}}'})
+[DEBUG] 19:02:20 [ep2] step 16/200  msgs=27
+[DEBUG] 19:02:21 [ep2] step 16 — advance_round({})
+[INFO] 19:02:21 [ep2] step 16 — round advanced; context reset
+[DEBUG] 19:02:21 [ep2] step 17/200  msgs=2
+[DEBUG] 19:02:22 [ep2] step 17 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:02:23 [ep2] step 18/200  msgs=4
+[DEBUG] 19:02:24 [ep2] step 18 — view_requests({})
+[DEBUG] 19:02:24 [ep2] step 18 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:02:24 [ep2] step 18 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:02:24 [ep2] step 19/200  msgs=8
+[DEBUG] 19:02:26 [ep2] step 19 — query_erp({'table': 'inventory', 'location': 'central_pharmacy', 'sku': 'IV-SAL-500'})
+[DEBUG] 19:02:26 [ep2] step 20/200  msgs=10
+[DEBUG] 19:02:28 [ep2] step 20 — query_erp({'table': 'inventory', 'location': 'central_pharmacy', 'sku': 'BLOOD-RBC'})
+[DEBUG] 19:02:28 [ep2] step 20 — query_erp({'table': 'inventory', 'location': 'central_pharmacy', 'sku': 'BLOOD-PLT'})
+[DEBUG] 19:02:28 [ep2] step 20 — query_erp({'table': 'inventory', 'location': 'central_pharmacy', 'sku': 'BLOOD-FFP'})
+[DEBUG] 19:02:28 [ep2] step 20 — query_erp({'table': 'inventory', 'location': 'central_pharmacy', 'sku': 'ANTIBIO-01'})
+[DEBUG] 19:02:28 [ep2] step 20 — query_erp({'table': 'inventory', 'location': 'central_pharmacy', 'sku': 'OXY-MASK'})
+[DEBUG] 19:02:28 [ep2] step 20 — query_erp({'table': 'inventory', 'location': 'central_pharmacy', 'sku': 'SYR-10'})
+[DEBUG] 19:02:28 [ep2] step 20 — query_erp({'table': 'inventory', 'location': 'central_pharmacy', 'sku': 'GLOVE-001'})
+[DEBUG] 19:02:28 [ep2] step 20 — query_erp({'table': 'inventory', 'location': 'central_pharmacy', 'sku': 'MASK-001'})
+[DEBUG] 19:02:28 [ep2] step 20 — query_erp({'table': 'inventory', 'location': 'central_pharmacy', 'sku': 'GAUZE-01'})
+[DEBUG] 19:02:29 [ep2] step 21/200  msgs=20
+[DEBUG] 19:02:30 [ep2] step 21 — quarantine_lot({'location_id': 'ward_icu', 'sku': 'BLOOD-PLT', 'lot_id': 'AUTO-QUARANTINED'})
+[DEBUG] 19:02:31 [ep2] step 22/200  msgs=22
+[DEBUG] 19:02:32 [ep2] step 22 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'IV-SAL-500', 'destination_id': 'central_pharmacy', 'quantity': 120, 'priority': 'standard'})
+[DEBUG] 19:02:32 [ep2] step 23/200  msgs=24
+[DEBUG] 19:02:34 [ep2] step 23 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":13,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":36,"ANTIBIO-01":24,"OXY-MASK":18,"SYR-10":80,"GLOVE-001":54},"ward_er":{"BLOOD-RBC":14,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":41,"ANTIBIO-01":33,"OXY-MASK":16,"SYR-10":97,"GLOVE-001":50,"GAUZE-01":65},"ward_general":{"IV-SAL-500":39,"ANTIBIO-01":36,"SYR-10":122,"GLOVE-001":56,"MASK-001":66,"GAUZE-01":116}}'})
+[DEBUG] 19:02:35 [ep2] step 24/200  msgs=26
+[DEBUG] 19:02:36 [ep2] step 24 — advance_round({})
+[INFO] 19:02:36 [ep2] step 24 — round advanced; context reset
+[DEBUG] 19:02:37 [ep2] step 25/200  msgs=2
+[DEBUG] 19:02:38 [ep2] step 25 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:02:38 [ep2] step 26/200  msgs=4
+[DEBUG] 19:02:40 [ep2] step 26 — view_requests({})
+[DEBUG] 19:02:40 [ep2] step 26 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:02:40 [ep2] step 26 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:02:40 [ep2] step 27/200  msgs=8
+[DEBUG] 19:02:41 [ep2] step 27 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 3, 'priority': 'standard'})
+[DEBUG] 19:02:42 [ep2] step 28/200  msgs=10
+[DEBUG] 19:02:44 [ep2] step 28 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":10,"BLOOD-PLT":6,"BLOOD-FFP":7,"IV-SAL-500":39,"ANTIBIO-01":30,"OXY-MASK":13,"SYR-10":74,"GLOVE-001":47},"ward_er":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":32,"ANTIBIO-01":28,"OXY-MASK":15,"SYR-10":99,"GLOVE-001":50,"GAUZE-01":66},"ward_general":{"IV-SAL-500":44,"ANTIBIO-01":41,"SYR-10":129,"GLOVE-001":69,"MASK-001":86,"GAUZE-01":67}}'})
+[DEBUG] 19:02:44 [ep2] step 29/200  msgs=12
+[DEBUG] 19:02:46 [ep2] step 29 — advance_round({})
+[INFO] 19:02:46 [ep2] step 29 — round advanced; context reset
+[DEBUG] 19:02:46 [ep2] step 30/200  msgs=2
+[DEBUG] 19:02:47 [ep2] step 30 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:02:48 [ep2] step 31/200  msgs=4
+[DEBUG] 19:02:49 [ep2] step 31 — view_requests({})
+[DEBUG] 19:02:49 [ep2] step 32/200  msgs=6
+[DEBUG] 19:02:51 [ep2] step 32 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:02:51 [ep2] step 32 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:02:52 [ep2] step 33/200  msgs=9
+[DEBUG] 19:02:53 [ep2] step 33 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:02:53 [ep2] step 34/200  msgs=11
+[DEBUG] 19:02:54 [ep2] step 34 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:02:55 [ep2] step 35/200  msgs=13
+[DEBUG] 19:02:56 [ep2] step 35 — query_erp({'table': 'inventory', 'location': 'central_pharmacy', 'sku': 'BLOOD-RBC'})
+[DEBUG] 19:02:56 [ep2] step 36/200  msgs=15
+[DEBUG] 19:02:57 [ep2] step 36 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 12, 'priority': 'standard'})
+[DEBUG] 19:02:58 [ep2] step 37/200  msgs=17
+[DEBUG] 19:03:00 [ep2] step 37 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 3, 'priority': 'standard'})
+[DEBUG] 19:03:00 [ep2] step 37 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-FFP', 'destination_id': 'central_pharmacy', 'quantity': 8, 'priority': 'standard'})
+[DEBUG] 19:03:00 [ep2] step 37 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'IV-SAL-500', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:03:00 [ep2] step 38/200  msgs=21
+[DEBUG] 19:03:02 [ep2] step 38 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":11,"BLOOD-PLT":6,"BLOOD-FFP":9,"IV-SAL-500":48,"ANTIBIO-01":25,"OXY-MASK":12,"SYR-10":91,"GLOVE-001":59},"ward_er":{"BLOOD-RBC":18,"BLOOD-PLT":7,"BLOOD-FFP":7,"IV-SAL-500":56,"ANTIBIO-01":23,"OXY-MASK":15,"SYR-10":80,"GLOVE-001":46,"GAUZE-01":76},"ward_general":{"IV-SAL-500":40,"ANTIBIO-01":19,"SYR-10":143,"GLOVE-001":51,"MASK-001":85,"GAUZE-01":76}}'})
+[DEBUG] 19:03:03 [ep2] step 39/200  msgs=23
+[DEBUG] 19:03:04 [ep2] step 39 — advance_round({})
+[INFO] 19:03:04 [ep2] step 39 — round advanced; context reset
+[DEBUG] 19:03:04 [ep2] step 40/200  msgs=2
+[DEBUG] 19:03:05 [ep2] step 40 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:03:06 [ep2] step 41/200  msgs=4
+[DEBUG] 19:03:07 [ep2] step 41 — view_requests({})
+[DEBUG] 19:03:07 [ep2] step 41 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:03:07 [ep2] step 41 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:03:07 [ep2] step 42/200  msgs=8
+[DEBUG] 19:03:08 [ep2] step 42 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 2, 'priority': 'expedited'})
+[DEBUG] 19:03:09 [ep2] step 43/200  msgs=10
+[DEBUG] 19:03:11 [ep2] step 43 — file_justification({'ticket_id': 'BOT-0017', 'reason': 'Supplier disruption has extended MEDLINE lead time to 5 days. ICU and ER blood demand must be protected; expedited BACKUP-B order for the small net gap in BLOOD-RBC is needed to avoid stockout while existing in-transit supply is accounted for.'})
+[DEBUG] 19:03:11 [ep2] step 44/200  msgs=12
+[DEBUG] 19:03:13 [ep2] step 44 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":39,"ANTIBIO-01":26,"OXY-MASK":18,"SYR-10":84,"GLOVE-001":43},"ward_er":{"BLOOD-RBC":13,"BLOOD-PLT":6,"BLOOD-FFP":9,"IV-SAL-500":43,"ANTIBIO-01":22,"OXY-MASK":18,"SYR-10":75,"GLOVE-001":48,"GAUZE-01":68},"ward_general":{"IV-SAL-500":56,"ANTIBIO-01":27,"SYR-10":96,"GLOVE-001":48,"MASK-001":97,"GAUZE-01":111}}'})
+[DEBUG] 19:03:14 [ep2] step 45/200  msgs=14
+[DEBUG] 19:03:15 [ep2] step 45 — advance_round({})
+[INFO] 19:03:15 [ep2] step 45 — round advanced; context reset
+[DEBUG] 19:03:15 [ep2] step 46/200  msgs=2
+[DEBUG] 19:03:17 [ep2] step 46 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:03:17 [ep2] step 46 — view_requests({})
+[DEBUG] 19:03:17 [ep2] step 46 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:03:17 [ep2] step 46 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:03:17 [ep2] step 47/200  msgs=7
+[DEBUG] 19:03:18 [ep2] step 47 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:03:19 [ep2] step 48/200  msgs=9
+[DEBUG] 19:03:20 [ep2] step 48 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:03:21 [ep2] step 49/200  msgs=11
+[DEBUG] 19:03:22 [ep2] step 49 — query_supplier({'supplier_id': 'MEDLINE'})
+[DEBUG] 19:03:23 [ep2] step 50/200  msgs=13
+[DEBUG] 19:03:25 [ep2] step 50 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 13, 'priority': 'standard'})
+[DEBUG] 19:03:25 [ep2] step 50 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 3, 'priority': 'standard'})
+[DEBUG] 19:03:25 [ep2] step 50 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'BLOOD-FFP', 'destination_id': 'central_pharmacy', 'quantity': 9, 'priority': 'standard'})
+[DEBUG] 19:03:25 [ep2] step 50 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'IV-SAL-500', 'destination_id': 'central_pharmacy', 'quantity': 172, 'priority': 'standard'})
+[DEBUG] 19:03:25 [ep2] step 50 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'ANTIBIO-01', 'destination_id': 'central_pharmacy', 'quantity': 72, 'priority': 'standard'})
+[DEBUG] 19:03:25 [ep2] step 50 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'OXY-MASK', 'destination_id': 'central_pharmacy', 'quantity': 48, 'priority': 'standard'})
+[DEBUG] 19:03:25 [ep2] step 50 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'SYR-10', 'destination_id': 'central_pharmacy', 'quantity': 210, 'priority': 'standard'})
+[DEBUG] 19:03:25 [ep2] step 50 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'GLOVE-001', 'destination_id': 'central_pharmacy', 'quantity': 150, 'priority': 'standard'})
+[DEBUG] 19:03:25 [ep2] step 50 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'MASK-001', 'destination_id': 'central_pharmacy', 'quantity': 60, 'priority': 'standard'})
+[DEBUG] 19:03:25 [ep2] step 50 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'GAUZE-01', 'destination_id': 'central_pharmacy', 'quantity': 140, 'priority': 'standard'})
+[DEBUG] 19:03:26 [ep2] step 51/200  msgs=24
+[DEBUG] 19:03:28 [ep2] step 51 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":13,"BLOOD-PLT":6,"BLOOD-FFP":9,"IV-SAL-500":40,"ANTIBIO-01":21,"OXY-MASK":19,"SYR-10":87,"GLOVE-001":46,"MASK-001":1,"GAUZE-01":1},"ward_er":{"BLOOD-RBC":13,"BLOOD-PLT":7,"BLOOD-FFP":9,"IV-SAL-500":50,"ANTIBIO-01":25,"OXY-MASK":14,"SYR-10":80,"GLOVE-001":93,"MASK-001":1,"GAUZE-01":61},"ward_general":{"BLOOD-RBC":1,"BLOOD-PLT":1,"BLOOD-FFP":1,"IV-SAL-500":62,"ANTIBIO-01":45,"OXY-MASK":1,"SYR-10":116,"GLOVE-001":71,"MASK-001":76,"GAUZE-01":66}}'})
+[DEBUG] 19:03:29 [ep2] step 52/200  msgs=26
+[DEBUG] 19:03:30 [ep2] step 52 — advance_round({})
+[INFO] 19:03:30 [ep2] seed=0 diff=medium — done=True reward=0.5598 steps=52 elapsed=99.9s
+[INFO] 19:03:30 ─── Episode 3 / 9  seed=0  diff=heavy ───
+[INFO] 19:03:30 [ep3] seed=0 diff=heavy started
+[DEBUG] 19:03:30 [ep3] step 1/200  msgs=2
+[DEBUG] 19:03:31 [ep3] step 1 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:03:32 [ep3] step 2/200  msgs=4
+[DEBUG] 19:03:33 [ep3] step 2 — view_requests({})
+[DEBUG] 19:03:33 [ep3] step 2 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:03:33 [ep3] step 2 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:03:34 [ep3] step 3/200  msgs=8
+[DEBUG] 19:03:36 [ep3] step 3 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":34,"ANTIBIO-01":22,"OXY-MASK":19,"SYR-10":76,"GLOVE-001":47},"ward_er":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":35,"ANTIBIO-01":27,"OXY-MASK":28,"SYR-10":86,"GLOVE-001":58,"GAUZE-01":72},"ward_general":{"IV-SAL-500":51,"ANTIBIO-01":33,"SYR-10":125,"GLOVE-001":85,"MASK-001":101,"GAUZE-01":99}}'})
+[DEBUG] 19:03:36 [ep3] step 4/200  msgs=10
+[DEBUG] 19:03:37 [ep3] step 4 — advance_round({})
+[INFO] 19:03:37 [ep3] step 4 — round advanced; context reset
+[DEBUG] 19:03:38 [ep3] step 5/200  msgs=2
+[DEBUG] 19:03:39 [ep3] step 5 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:03:39 [ep3] step 5 — view_requests({})
+[DEBUG] 19:03:39 [ep3] step 5 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:03:39 [ep3] step 5 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:03:39 [ep3] step 6/200  msgs=7
+[DEBUG] 19:03:42 [ep3] step 6 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 12, 'priority': 'standard'})
+[DEBUG] 19:03:42 [ep3] step 6 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:03:42 [ep3] step 6 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-FFP', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:03:42 [ep3] step 6 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'IV-SAL-500', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:03:42 [ep3] step 6 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'ANTIBIO-01', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:03:42 [ep3] step 6 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'OXY-MASK', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:03:42 [ep3] step 6 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'SYR-10', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:03:42 [ep3] step 6 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'GLOVE-001', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:03:42 [ep3] step 6 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'GAUZE-01', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:03:42 [ep3] step 6 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'MASK-001', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:03:42 [ep3] step 7/200  msgs=18
+[DEBUG] 19:03:45 [ep3] step 7 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":12,"BLOOD-PLT":5,"BLOOD-FFP":9,"IV-SAL-500":46,"ANTIBIO-01":26,"OXY-MASK":16,"SYR-10":76,"GLOVE-001":50},"ward_er":{"BLOOD-RBC":23,"BLOOD-PLT":12,"BLOOD-FFP":15,"IV-SAL-500":95,"ANTIBIO-01":54,"OXY-MASK":33,"SYR-10":163,"GLOVE-001":113,"GAUZE-01":155},"ward_general":{"IV-SAL-500":55,"ANTIBIO-01":36,"SYR-10":135,"GLOVE-001":57,"MASK-001":92,"GAUZE-01":0}}'})
+[DEBUG] 19:03:45 [ep3] step 8/200  msgs=20
+[DEBUG] 19:03:46 [ep3] step 8 — advance_round({})
+[INFO] 19:03:46 [ep3] step 8 — round advanced; context reset
+[DEBUG] 19:03:47 [ep3] step 9/200  msgs=2
+[DEBUG] 19:03:48 [ep3] step 9 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:03:48 [ep3] step 10/200  msgs=4
+[DEBUG] 19:03:49 [ep3] step 10 — view_requests({})
+[DEBUG] 19:03:49 [ep3] step 10 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:03:49 [ep3] step 10 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:03:50 [ep3] step 11/200  msgs=8
+[DEBUG] 19:03:51 [ep3] step 11 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 2})
+[DEBUG] 19:03:51 [ep3] step 11 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 2})
+[DEBUG] 19:03:51 [ep3] step 11 — query_ward_history({'ward_id': 'ward_general', 'n_rounds': 2})
+[DEBUG] 19:03:52 [ep3] step 12/200  msgs=12
+[DEBUG] 19:03:53 [ep3] step 12 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 11, 'priority': 'standard'})
+[DEBUG] 19:03:53 [ep3] step 13/200  msgs=14
+[DEBUG] 19:03:55 [ep3] step 13 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":13,"BLOOD-PLT":7,"BLOOD-FFP":7,"IV-SAL-500":34,"ANTIBIO-01":25,"OXY-MASK":15,"SYR-10":77,"GLOVE-001":50},"ward_er":{"BLOOD-RBC":13,"BLOOD-PLT":7,"BLOOD-FFP":7,"IV-SAL-500":52,"ANTIBIO-01":27,"OXY-MASK":17,"SYR-10":92,"GLOVE-001":53,"GAUZE-01":70},"ward_general":{"IV-SAL-500":55,"ANTIBIO-01":38,"SYR-10":100,"GLOVE-001":73,"MASK-001":88,"GAUZE-01":70}}'})
+[DEBUG] 19:03:56 [ep3] step 14/200  msgs=16
+[DEBUG] 19:03:57 [ep3] step 14 — advance_round({})
+[INFO] 19:03:57 [ep3] step 14 — round advanced; context reset
+[DEBUG] 19:03:58 [ep3] step 15/200  msgs=2
+[DEBUG] 19:03:59 [ep3] step 15 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:03:59 [ep3] step 16/200  msgs=4
+[DEBUG] 19:04:01 [ep3] step 16 — view_requests({})
+[DEBUG] 19:04:01 [ep3] step 16 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:04:01 [ep3] step 16 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:04:01 [ep3] step 17/200  msgs=8
+[DEBUG] 19:04:02 [ep3] step 17 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:04:03 [ep3] step 18/200  msgs=10
+[DEBUG] 19:04:04 [ep3] step 18 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:04:05 [ep3] step 19/200  msgs=12
+[DEBUG] 19:04:06 [ep3] step 19 — query_erp({'table': 'inventory', 'location': 'central_pharmacy', 'sku': 'IV-SAL-500'})
+[DEBUG] 19:04:07 [ep3] step 20/200  msgs=14
+[DEBUG] 19:04:08 [ep3] step 20 — query_supplier({'supplier_id': 'MEDLINE'})
+[DEBUG] 19:04:08 [ep3] step 21/200  msgs=16
+[DEBUG] 19:04:10 [ep3] step 21 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 6, 'priority': 'expedited'})
+[DEBUG] 19:04:11 [ep3] step 22/200  msgs=18
+[DEBUG] 19:04:12 [ep3] step 22 — file_justification({'ticket_id': 'BOT-0004', 'reason': 'Cold-chain breach at ward ICU auto-quarantined BLOOD-PLT lots; ICU blood products are critical and current central stock is insufficient to cover the net gap without urgent replenishment. Expedited replenishment is required to prevent ICU stockout.'})
+[DEBUG] 19:04:13 [ep3] step 23/200  msgs=20
+[DEBUG] 19:04:14 [ep3] step 23 — quarantine_lot({'location_id': 'ward_icu', 'sku': 'BLOOD-PLT', 'lot_id': 'AUTO-QUARANTINED'})
+[DEBUG] 19:04:15 [ep3] step 24/200  msgs=22
+[DEBUG] 19:04:16 [ep3] step 24 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":13,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":36,"ANTIBIO-01":24,"OXY-MASK":18,"SYR-10":80,"GLOVE-001":54},"ward_er":{"BLOOD-RBC":14,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":41,"ANTIBIO-01":33,"OXY-MASK":16,"SYR-10":97,"GLOVE-001":50,"GAUZE-01":65},"ward_general":{"IV-SAL-500":56,"ANTIBIO-01":36,"SYR-10":122,"GLOVE-001":56,"MASK-001":66,"GAUZE-01":116}}'})
+[DEBUG] 19:04:17 [ep3] step 25/200  msgs=24
+[DEBUG] 19:04:18 [ep3] step 25 — advance_round({})
+[INFO] 19:04:18 [ep3] step 25 — round advanced; context reset
+[DEBUG] 19:04:18 [ep3] step 26/200  msgs=2
+[DEBUG] 19:04:20 [ep3] step 26 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:04:20 [ep3] step 27/200  msgs=4
+[DEBUG] 19:04:22 [ep3] step 27 — view_requests({})
+[DEBUG] 19:04:22 [ep3] step 27 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:04:22 [ep3] step 27 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:04:23 [ep3] step 28/200  msgs=8
+[DEBUG] 19:04:24 [ep3] step 28 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:04:24 [ep3] step 29/200  msgs=10
+[DEBUG] 19:04:26 [ep3] step 29 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:04:26 [ep3] step 30/200  msgs=12
+[DEBUG] 19:04:27 [ep3] step 30 — query_erp({'table': 'inventory', 'location': 'central_pharmacy', 'sku': 'BLOOD-FFP'})
+[DEBUG] 19:04:28 [ep3] step 31/200  msgs=14
+[DEBUG] 19:04:30 [ep3] step 31 — submit_po({'supplier_id': 'FASTMED', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 1, 'priority': 'expedited'})
+[DEBUG] 19:04:30 [ep3] step 31 — submit_po({'supplier_id': 'FASTMED', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 6, 'priority': 'expedited'})
+[DEBUG] 19:04:30 [ep3] step 31 — submit_po({'supplier_id': 'FASTMED', 'product_id': 'BLOOD-FFP', 'destination_id': 'central_pharmacy', 'quantity': 8, 'priority': 'expedited'})
+[DEBUG] 19:04:30 [ep3] step 31 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'IV-SAL-500', 'destination_id': 'central_pharmacy', 'quantity': 120, 'priority': 'standard'})
+[DEBUG] 19:04:30 [ep3] step 31 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'ANTIBIO-01', 'destination_id': 'central_pharmacy', 'quantity': 72, 'priority': 'standard'})
+[DEBUG] 19:04:30 [ep3] step 31 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'OXY-MASK', 'destination_id': 'central_pharmacy', 'quantity': 48, 'priority': 'standard'})
+[DEBUG] 19:04:30 [ep3] step 31 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'SYR-10', 'destination_id': 'central_pharmacy', 'quantity': 210, 'priority': 'standard'})
+[DEBUG] 19:04:30 [ep3] step 31 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'GLOVE-001', 'destination_id': 'central_pharmacy', 'quantity': 150, 'priority': 'standard'})
+[DEBUG] 19:04:30 [ep3] step 31 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'MASK-001', 'destination_id': 'central_pharmacy', 'quantity': 60, 'priority': 'standard'})
+[DEBUG] 19:04:30 [ep3] step 31 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'GAUZE-01', 'destination_id': 'central_pharmacy', 'quantity': 140, 'priority': 'standard'})
+[DEBUG] 19:04:31 [ep3] step 32/200  msgs=25
+[DEBUG] 19:04:33 [ep3] step 32 — file_justification({'ticket_id': 'BOT-0006', 'reason': 'Expedited blood product replenishment required due to active MCI warning and ICU/ER trauma surge risk; pre-positioning to prevent critical blood stockouts.'})
+[DEBUG] 19:04:33 [ep3] step 32 — file_justification({'ticket_id': 'BOT-0008', 'reason': 'Expedited platelet replenishment required due to active MCI warning and anticipated trauma-related demand increase at ICU/ER.'})
+[DEBUG] 19:04:33 [ep3] step 32 — file_justification({'ticket_id': 'BOT-0010', 'reason': 'Expedited FFP replenishment required due to active MCI warning and anticipated trauma-related demand increase at ICU/ER.'})
+[DEBUG] 19:04:33 [ep3] step 33/200  msgs=29
+[DEBUG] 19:04:35 [ep3] step 33 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":11,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":43,"ANTIBIO-01":25,"OXY-MASK":14,"SYR-10":82,"GLOVE-001":50},"ward_er":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":38,"ANTIBIO-01":24,"OXY-MASK":16,"SYR-10":90,"GLOVE-001":55,"GAUZE-01":70},"ward_general":{"IV-SAL-500":45,"ANTIBIO-01":30,"SYR-10":100,"GLOVE-001":55,"MASK-001":60,"GAUZE-01":70}}'})
+[DEBUG] 19:04:36 [ep3] step 34/200  msgs=31
+[DEBUG] 19:04:37 [ep3] step 34 — advance_round({})
+[INFO] 19:04:37 [ep3] step 34 — round advanced; context reset
+[DEBUG] 19:04:37 [ep3] step 35/200  msgs=2
+[DEBUG] 19:04:38 [ep3] step 35 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:04:39 [ep3] step 36/200  msgs=4
+[DEBUG] 19:04:41 [ep3] step 36 — view_requests({})
+[DEBUG] 19:04:41 [ep3] step 36 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:04:41 [ep3] step 36 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:04:42 [ep3] step 37/200  msgs=8
+[DEBUG] 19:04:43 [ep3] step 37 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:04:43 [ep3] step 37 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:04:43 [ep3] step 37 — query_ward_history({'ward_id': 'ward_general', 'n_rounds': 3})
+[DEBUG] 19:04:43 [ep3] step 38/200  msgs=12
+[DEBUG] 19:04:46 [ep3] step 38 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":13,"BLOOD-PLT":7,"BLOOD-FFP":8,"IV-SAL-500":43,"ANTIBIO-01":25,"OXY-MASK":14,"SYR-10":79,"GLOVE-001":55},"ward_er":{"BLOOD-RBC":18,"BLOOD-PLT":7,"BLOOD-FFP":8,"IV-SAL-500":55,"ANTIBIO-01":29,"OXY-MASK":18,"SYR-10":86,"GLOVE-001":56,"GAUZE-01":75},"ward_general":{"IV-SAL-500":45,"ANTIBIO-01":24,"SYR-10":90,"GLOVE-001":50,"MASK-001":60,"GAUZE-01":70}}'})
+[DEBUG] 19:04:46 [ep3] step 39/200  msgs=14
+[DEBUG] 19:04:47 [ep3] step 39 — advance_round({})
+[INFO] 19:04:47 [ep3] step 39 — round advanced; context reset
+[DEBUG] 19:04:48 [ep3] step 40/200  msgs=2
+[DEBUG] 19:04:49 [ep3] step 40 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:04:49 [ep3] step 41/200  msgs=4
+[DEBUG] 19:04:51 [ep3] step 41 — view_requests({})
+[DEBUG] 19:04:51 [ep3] step 41 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:04:51 [ep3] step 41 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:04:51 [ep3] step 42/200  msgs=8
+[DEBUG] 19:04:52 [ep3] step 42 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:04:53 [ep3] step 43/200  msgs=10
+[DEBUG] 19:04:54 [ep3] step 43 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:04:54 [ep3] step 44/200  msgs=12
+[DEBUG] 19:04:58 [ep3] step 44 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 12, 'priority': 'expedited'})
+[DEBUG] 19:04:58 [ep3] step 44 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 6, 'priority': 'expedited'})
+[DEBUG] 19:04:58 [ep3] step 44 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'BLOOD-FFP', 'destination_id': 'central_pharmacy', 'quantity': 8, 'priority': 'expedited'})
+[DEBUG] 19:04:58 [ep3] step 44 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'IV-SAL-500', 'destination_id': 'central_pharmacy', 'quantity': 120, 'priority': 'standard'})
+[DEBUG] 19:04:58 [ep3] step 44 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'ANTIBIO-01', 'destination_id': 'central_pharmacy', 'quantity': 72, 'priority': 'standard'})
+[DEBUG] 19:04:58 [ep3] step 44 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'OXY-MASK', 'destination_id': 'central_pharmacy', 'quantity': 48, 'priority': 'standard'})
+[DEBUG] 19:04:58 [ep3] step 44 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'SYR-10', 'destination_id': 'central_pharmacy', 'quantity': 210, 'priority': 'standard'})
+[DEBUG] 19:04:58 [ep3] step 44 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'GLOVE-001', 'destination_id': 'central_pharmacy', 'quantity': 150, 'priority': 'standard'})
+[DEBUG] 19:04:58 [ep3] step 44 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'MASK-001', 'destination_id': 'central_pharmacy', 'quantity': 60, 'priority': 'standard'})
+[DEBUG] 19:04:58 [ep3] step 44 — submit_po({'supplier_id': 'BACKUP-B', 'product_id': 'GAUZE-01', 'destination_id': 'central_pharmacy', 'quantity': 140, 'priority': 'standard'})
+[DEBUG] 19:04:58 [ep3] step 45/200  msgs=23
+[DEBUG] 19:05:01 [ep3] step 45 — file_justification({'ticket_id': 'BOT-0019', 'reason': 'Supplier disruption active; MEDLINE lead time extended to 5 days. Expedited replenishment is required to protect ICU blood availability and prevent stockouts for critical care.'})
+[DEBUG] 19:05:01 [ep3] step 45 — file_justification({'ticket_id': 'BOT-0021', 'reason': 'Supplier disruption active; MEDLINE lead time extended to 5 days. Expedited replenishment is required to protect ICU blood availability and prevent stockouts for critical care.'})
+[DEBUG] 19:05:01 [ep3] step 45 — file_justification({'ticket_id': 'BOT-0023', 'reason': 'Supplier disruption active; MEDLINE lead time extended to 5 days. Expedited replenishment is required to protect ICU blood availability and prevent stockouts for critical care.'})
+[DEBUG] 19:05:01 [ep3] step 46/200  msgs=27
+[DEBUG] 19:05:03 [ep3] step 46 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":13,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":43,"ANTIBIO-01":25,"OXY-MASK":14,"SYR-10":79,"GLOVE-001":44},"ward_er":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":45,"ANTIBIO-01":23,"OXY-MASK":15,"SYR-10":78,"GLOVE-001":50,"GAUZE-01":70},"ward_general":{"IV-SAL-500":45,"ANTIBIO-01":28,"SYR-10":90,"GLOVE-001":50,"MASK-001":60,"GAUZE-01":100}}'})
+[DEBUG] 19:05:04 [ep3] step 47/200  msgs=29
+[DEBUG] 19:05:06 [ep3] step 47 — advance_round({})
+[INFO] 19:05:06 [ep3] step 47 — round advanced; context reset
+[DEBUG] 19:05:06 [ep3] step 48/200  msgs=2
+[DEBUG] 19:05:08 [ep3] step 48 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:05:08 [ep3] step 48 — view_requests({})
+[DEBUG] 19:05:08 [ep3] step 48 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:05:08 [ep3] step 48 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:05:08 [ep3] step 48 — query_supplier({'supplier_id': 'MEDLINE'})
+[DEBUG] 19:05:08 [ep3] step 48 — query_supplier({'supplier_id': 'BACKUP-B'})
+[DEBUG] 19:05:08 [ep3] step 48 — query_supplier({'supplier_id': 'FASTMED'})
+[DEBUG] 19:05:08 [ep3] step 49/200  msgs=10
+[DEBUG] 19:05:10 [ep3] step 49 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":13,"BLOOD-PLT":6,"BLOOD-FFP":9,"IV-SAL-500":40,"ANTIBIO-01":21,"OXY-MASK":19,"SYR-10":87,"GLOVE-001":46},"ward_er":{"BLOOD-RBC":13,"BLOOD-PLT":7,"BLOOD-FFP":9,"IV-SAL-500":50,"ANTIBIO-01":25,"OXY-MASK":14,"SYR-10":80,"GLOVE-001":93,"GAUZE-01":61},"ward_general":{"IV-SAL-500":62,"ANTIBIO-01":45,"SYR-10":116,"GLOVE-001":71,"MASK-001":76,"GAUZE-01":66}}'})
+[DEBUG] 19:05:10 [ep3] step 50/200  msgs=12
+[DEBUG] 19:05:11 [ep3] step 50 — advance_round({})
+[INFO] 19:05:11 [ep3] seed=0 diff=heavy — done=True reward=0.5095 steps=50 elapsed=101.2s
+[INFO] 19:05:11 ─── Episode 4 / 9  seed=1  diff=light ───
+[INFO] 19:05:11 [ep4] seed=1 diff=light started
+[DEBUG] 19:05:11 [ep4] step 1/200  msgs=2
+[DEBUG] 19:05:12 [ep4] step 1 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:05:13 [ep4] step 2/200  msgs=4
+[DEBUG] 19:05:14 [ep4] step 2 — view_requests({})
+[DEBUG] 19:05:14 [ep4] step 3/200  msgs=6
+[DEBUG] 19:05:16 [ep4] step 3 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:05:16 [ep4] step 3 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:05:16 [ep4] step 4/200  msgs=9
+[DEBUG] 19:05:18 [ep4] step 4 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":14,"BLOOD-PLT":6,"BLOOD-FFP":9,"IV-SAL-500":36,"ANTIBIO-01":25,"OXY-MASK":15,"SYR-10":95,"GLOVE-001":47},"ward_er":{"BLOOD-RBC":17,"BLOOD-PLT":7,"BLOOD-FFP":7,"IV-SAL-500":34,"ANTIBIO-01":22,"OXY-MASK":15,"SYR-10":119,"GLOVE-001":56,"GAUZE-01":68},"ward_general":{"IV-SAL-500":42,"ANTIBIO-01":36,"SYR-10":95,"GLOVE-001":71,"MASK-001":68,"GAUZE-01":67}}'})
+[DEBUG] 19:05:19 [ep4] step 5/200  msgs=11
+[DEBUG] 19:05:20 [ep4] step 5 — advance_round({})
+[INFO] 19:05:20 [ep4] step 5 — round advanced; context reset
+[DEBUG] 19:05:20 [ep4] step 6/200  msgs=2
+[DEBUG] 19:05:21 [ep4] step 6 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:05:21 [ep4] step 6 — view_requests({})
+[DEBUG] 19:05:21 [ep4] step 6 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:05:21 [ep4] step 6 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:05:22 [ep4] step 7/200  msgs=7
+[DEBUG] 19:05:24 [ep4] step 7 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'standard'})
+[DEBUG] 19:05:24 [ep4] step 7 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":34,"ANTIBIO-01":23,"OXY-MASK":15,"SYR-10":90,"GLOVE-001":44},"ward_er":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":9,"IV-SAL-500":41,"ANTIBIO-01":23,"OXY-MASK":13,"SYR-10":89,"GLOVE-001":53,"GAUZE-01":78},"ward_general":{"IV-SAL-500":61,"ANTIBIO-01":38,"SYR-10":116,"GLOVE-001":82,"MASK-001":97,"GAUZE-01":111}}'})
+[DEBUG] 19:05:25 [ep4] step 8/200  msgs=10
+[DEBUG] 19:05:25 [ep4] step 8 — advance_round({})
+[INFO] 19:05:25 [ep4] step 8 — round advanced; context reset
+[DEBUG] 19:05:26 [ep4] step 9/200  msgs=2
+[DEBUG] 19:05:27 [ep4] step 9 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:05:28 [ep4] step 10/200  msgs=4
+[DEBUG] 19:05:29 [ep4] step 10 — view_requests({})
+[DEBUG] 19:05:29 [ep4] step 10 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:05:29 [ep4] step 10 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:05:29 [ep4] step 11/200  msgs=8
+[DEBUG] 19:05:31 [ep4] step 11 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:05:31 [ep4] step 11 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:05:31 [ep4] step 11 — query_ward_history({'ward_id': 'ward_general', 'n_rounds': 3})
+[DEBUG] 19:05:31 [ep4] step 12/200  msgs=12
+[DEBUG] 19:05:33 [ep4] step 12 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":6,"BLOOD-PLT":12,"BLOOD-FFP":5,"IV-SAL-500":39,"ANTIBIO-01":25,"OXY-MASK":21,"SYR-10":88,"GLOVE-001":57},"ward_er":{"BLOOD-RBC":6,"BLOOD-PLT":12,"BLOOD-FFP":5,"IV-SAL-500":41,"ANTIBIO-01":25,"OXY-MASK":15,"SYR-10":82,"GLOVE-001":52,"GAUZE-01":97},"ward_general":{"IV-SAL-500":38,"ANTIBIO-01":29,"SYR-10":98,"GLOVE-001":44,"MASK-001":63,"GAUZE-01":71}}'})
+[DEBUG] 19:05:33 [ep4] step 13/200  msgs=14
+[DEBUG] 19:05:35 [ep4] step 13 — advance_round({})
+[INFO] 19:05:35 [ep4] step 13 — round advanced; context reset
+[DEBUG] 19:05:35 [ep4] step 14/200  msgs=2
+[DEBUG] 19:05:36 [ep4] step 14 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:05:36 [ep4] step 14 — view_requests({})
+[DEBUG] 19:05:36 [ep4] step 14 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:05:36 [ep4] step 14 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:05:37 [ep4] step 15/200  msgs=7
+[DEBUG] 19:05:40 [ep4] step 15 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:05:40 [ep4] step 15 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:05:40 [ep4] step 15 — query_ward_history({'ward_id': 'ward_general', 'n_rounds': 3})
+[DEBUG] 19:05:41 [ep4] step 16/200  msgs=11
+[DEBUG] 19:05:42 [ep4] step 16 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":44,"ANTIBIO-01":24,"OXY-MASK":15,"SYR-10":76,"GLOVE-001":50},"ward_er":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":40,"ANTIBIO-01":24,"OXY-MASK":16,"SYR-10":86,"GLOVE-001":46,"GAUZE-01":70},"ward_general":{"IV-SAL-500":50,"ANTIBIO-01":24,"SYR-10":90,"GLOVE-001":50,"MASK-001":60,"GAUZE-01":70}}'})
+[DEBUG] 19:05:43 [ep4] step 17/200  msgs=13
+[DEBUG] 19:05:44 [ep4] step 17 — advance_round({})
+[INFO] 19:05:44 [ep4] step 17 — round advanced; context reset
+[DEBUG] 19:05:45 [ep4] step 18/200  msgs=2
+[DEBUG] 19:05:46 [ep4] step 18 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:05:46 [ep4] step 18 — view_requests({})
+[DEBUG] 19:05:46 [ep4] step 18 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:05:46 [ep4] step 18 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:05:47 [ep4] step 19/200  msgs=7
+[DEBUG] 19:05:48 [ep4] step 19 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:05:48 [ep4] step 19 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:05:48 [ep4] step 19 — query_ward_history({'ward_id': 'ward_general', 'n_rounds': 3})
+[DEBUG] 19:05:48 [ep4] step 20/200  msgs=11
+[DEBUG] 19:05:50 [ep4] step 20 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":11,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":44,"ANTIBIO-01":24,"OXY-MASK":15,"SYR-10":78,"GLOVE-001":50},"ward_er":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":44,"ANTIBIO-01":24,"OXY-MASK":16,"SYR-10":80,"GLOVE-001":50,"GAUZE-01":70},"ward_general":{"IV-SAL-500":44,"ANTIBIO-01":28,"SYR-10":90,"GLOVE-001":50,"MASK-001":60,"GAUZE-01":70}}'})
+[DEBUG] 19:05:51 [ep4] step 21/200  msgs=13
+[DEBUG] 19:05:52 [ep4] step 21 — advance_round({})
+[INFO] 19:05:52 [ep4] step 21 — round advanced; context reset
+[DEBUG] 19:05:52 [ep4] step 22/200  msgs=2
+[DEBUG] 19:05:53 [ep4] step 22 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:05:53 [ep4] step 22 — view_requests({})
+[DEBUG] 19:05:53 [ep4] step 22 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:05:53 [ep4] step 22 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:05:54 [ep4] step 23/200  msgs=7
+[DEBUG] 19:05:55 [ep4] step 23 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:05:55 [ep4] step 23 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:05:55 [ep4] step 23 — query_ward_history({'ward_id': 'ward_general', 'n_rounds': 3})
+[DEBUG] 19:05:56 [ep4] step 24/200  msgs=11
+[DEBUG] 19:05:57 [ep4] step 24 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":11,"BLOOD-PLT":7,"BLOOD-FFP":8,"IV-SAL-500":35,"ANTIBIO-01":27,"OXY-MASK":15,"SYR-10":72,"GLOVE-001":40},"ward_er":{"BLOOD-RBC":11,"BLOOD-PLT":7,"BLOOD-FFP":6,"IV-SAL-500":33,"ANTIBIO-01":26,"OXY-MASK":15,"SYR-10":81,"GLOVE-001":50,"GAUZE-01":79},"ward_general":{"IV-SAL-500":49,"ANTIBIO-01":30,"SYR-10":74,"GLOVE-001":66,"MASK-001":46,"GAUZE-01":121}}'})
+[DEBUG] 19:05:58 [ep4] step 25/200  msgs=13
+[DEBUG] 19:05:59 [ep4] step 25 — advance_round({})
+[INFO] 19:05:59 [ep4] step 25 — round advanced; context reset
+[DEBUG] 19:05:59 [ep4] step 26/200  msgs=2
+[DEBUG] 19:06:00 [ep4] step 26 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:06:01 [ep4] step 27/200  msgs=4
+[DEBUG] 19:06:02 [ep4] step 27 — view_requests({})
+[DEBUG] 19:06:02 [ep4] step 27 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:06:02 [ep4] step 27 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:06:02 [ep4] step 28/200  msgs=8
+[DEBUG] 19:06:03 [ep4] step 28 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:06:03 [ep4] step 28 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:06:03 [ep4] step 28 — query_ward_history({'ward_id': 'ward_general', 'n_rounds': 3})
+[DEBUG] 19:06:04 [ep4] step 29/200  msgs=12
+[DEBUG] 19:06:05 [ep4] step 29 — submit_po({'supplier_id': 'FASTMED', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 12, 'priority': 'expedited'})
+[DEBUG] 19:06:06 [ep4] step 30/200  msgs=14
+[DEBUG] 19:06:07 [ep4] step 30 — file_justification({'ticket_id': 'BOT-0002', 'reason': 'MCI active with 2.8x blood demand at ICU/ER for the next 3 days. FASTMED expedited order is required to pre-position BLOOD-RBC immediately because current central stock is insufficient for surge coverage and no pipeline orders are in transit.'})
+[DEBUG] 19:06:08 [ep4] step 31/200  msgs=16
+[DEBUG] 19:06:09 [ep4] step 31 — submit_po({'supplier_id': 'FASTMED', 'product_id': 'BLOOD-PLT', 'destination_id': 'central_pharmacy', 'quantity': 6, 'priority': 'expedited'})
+[DEBUG] 19:06:09 [ep4] step 31 — submit_po({'supplier_id': 'FASTMED', 'product_id': 'BLOOD-FFP', 'destination_id': 'central_pharmacy', 'quantity': 8, 'priority': 'expedited'})
+[DEBUG] 19:06:09 [ep4] step 31 — submit_po({'supplier_id': 'FASTMED', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 0, 'priority': 'expedited'})
+[DEBUG] 19:06:10 [ep4] step 32/200  msgs=20
+[DEBUG] 19:06:14 [ep4] step 32 — file_justification({'ticket_id': 'BOT-0004', 'reason': 'MCI active with 2.8x blood demand at ICU/ER for the next 3 days. FASTMED expedited BLOOD-PLT is required to prevent critical trauma stockout during the surge; no pipeline orders are in transit.'})
+[DEBUG] 19:06:15 [ep4] step 33/200  msgs=22
+[DEBUG] 19:06:16 [ep4] step 33 — file_justification({'ticket_id': 'BOT-0006', 'reason': 'MCI active with 2.8x blood demand at ICU/ER for the next 3 days. FASTMED expedited BLOOD-FFP is required to prevent critical trauma stockout during the surge; no pipeline orders are in transit.'})
+[DEBUG] 19:06:16 [ep4] step 34/200  msgs=24
+[DEBUG] 19:06:18 [ep4] step 34 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'IV-SAL-500', 'destination_id': 'central_pharmacy', 'quantity': 120, 'priority': 'standard'})
+[DEBUG] 19:06:18 [ep4] step 34 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'ANTIBIO-01', 'destination_id': 'central_pharmacy', 'quantity': 72, 'priority': 'standard'})
+[DEBUG] 19:06:18 [ep4] step 34 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'OXY-MASK', 'destination_id': 'central_pharmacy', 'quantity': 48, 'priority': 'standard'})
+[DEBUG] 19:06:18 [ep4] step 34 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'SYR-10', 'destination_id': 'central_pharmacy', 'quantity': 210, 'priority': 'standard'})
+[DEBUG] 19:06:18 [ep4] step 34 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'GLOVE-001', 'destination_id': 'central_pharmacy', 'quantity': 150, 'priority': 'standard'})
+[DEBUG] 19:06:18 [ep4] step 34 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'MASK-001', 'destination_id': 'central_pharmacy', 'quantity': 60, 'priority': 'standard'})
+[DEBUG] 19:06:18 [ep4] step 34 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'GAUZE-01', 'destination_id': 'central_pharmacy', 'quantity': 140, 'priority': 'standard'})
+[DEBUG] 19:06:19 [ep4] step 35/200  msgs=32
+[DEBUG] 19:06:21 [ep4] step 35 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":50,"ANTIBIO-01":24,"OXY-MASK":15,"SYR-10":76,"GLOVE-001":50},"ward_er":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":48,"ANTIBIO-01":24,"OXY-MASK":16,"SYR-10":86,"GLOVE-001":50,"GAUZE-01":70},"ward_general":{"IV-SAL-500":40,"ANTIBIO-01":24,"SYR-10":80,"GLOVE-001":48,"MASK-001":44,"GAUZE-01":60}}'})
+[DEBUG] 19:06:21 [ep4] step 36/200  msgs=34
+[DEBUG] 19:06:23 [ep4] step 36 — advance_round({})
+[INFO] 19:06:23 [ep4] step 36 — round advanced; context reset
+[DEBUG] 19:06:24 [ep4] step 37/200  msgs=2
+[DEBUG] 19:06:25 [ep4] step 37 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:06:25 [ep4] step 38/200  msgs=4
+[DEBUG] 19:06:26 [ep4] step 38 — view_requests({})
+[DEBUG] 19:06:26 [ep4] step 39/200  msgs=6
+[DEBUG] 19:06:27 [ep4] step 39 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:06:27 [ep4] step 39 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:06:28 [ep4] step 40/200  msgs=9
+[DEBUG] 19:06:29 [ep4] step 40 — submit_po({'supplier_id': 'FASTMED', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 12, 'priority': 'expedited'})
+[DEBUG] 19:06:30 [ep4] step 41/200  msgs=11
+[DEBUG] 19:06:31 [ep4] step 41 — file_justification({'ticket_id': 'BOT-0015', 'reason': 'MCI active in ER with elevated blood demand; central pharmacy has only 12 RBC on hand and no RBC pipeline order in transit. FASTMED expedited replenishment is required to prevent ICU/ER blood stockout during the current 2-day round.'})
+[DEBUG] 19:06:32 [ep4] step 42/200  msgs=13
+[DEBUG] 19:06:34 [ep4] step 42 — submit_allocation_plan({'plan_json': '{"ward_icu":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":120,"ANTIBIO-01":72,"OXY-MASK":48,"SYR-10":210,"GLOVE-001":150},"ward_er":{"BLOOD-RBC":12,"BLOOD-PLT":6,"BLOOD-FFP":8,"IV-SAL-500":120,"ANTIBIO-01":72,"OXY-MASK":48,"SYR-10":210,"GLOVE-001":150,"GAUZE-01":140},"ward_general":{"IV-SAL-500":120,"ANTIBIO-01":72,"SYR-10":210,"GLOVE-001":150,"MASK-001":60,"GAUZE-01":140}}'})
+[DEBUG] 19:06:34 [ep4] step 43/200  msgs=15
+[DEBUG] 19:06:35 [ep4] step 43 — advance_round({})
+[INFO] 19:06:35 [ep4] seed=1 diff=light — done=True reward=0.3708 steps=43 elapsed=83.4s
+[INFO] 19:06:35 ─── Episode 5 / 9  seed=1  diff=medium ───
+[INFO] 19:06:35 [ep5] seed=1 diff=medium started
+[DEBUG] 19:06:35 [ep5] step 1/200  msgs=2
+[DEBUG] 19:06:36 [ep5] step 1 — read_inbox({'filter': 'unread'})
+[DEBUG] 19:06:36 [ep5] step 2/200  msgs=4
+[DEBUG] 19:06:37 [ep5] step 2 — view_requests({})
+[DEBUG] 19:06:37 [ep5] step 2 — query_erp({'table': 'pipeline_orders'})
+[DEBUG] 19:06:37 [ep5] step 2 — query_erp({'table': 'inventory', 'location': 'central_pharmacy'})
+[DEBUG] 19:06:38 [ep5] step 3/200  msgs=8
+[DEBUG] 19:06:39 [ep5] step 3 — query_ward_history({'ward_id': 'ward_icu', 'n_rounds': 3})
+[DEBUG] 19:06:39 [ep5] step 3 — query_ward_history({'ward_id': 'ward_er', 'n_rounds': 3})
+[DEBUG] 19:06:39 [ep5] step 3 — query_ward_history({'ward_id': 'ward_general', 'n_rounds': 3})
+[DEBUG] 19:06:39 [ep5] step 4/200  msgs=12
+[DEBUG] 19:06:40 [ep5] step 4 — submit_po({'supplier_id': 'MEDLINE', 'product_id': 'BLOOD-RBC', 'destination_id': 'central_pharmacy', 'quantity': 14, 'priority': 'standard'})
+[DEBUG] 19:06:41 [ep5] step 5/200  msgs=14

@@ -1,0 +1,18 @@
+# Training dependencies for MedChain GRPO pipeline
+# Server deps (simulation runs in-process)
+openenv-core[core]>=0.2.1
+fastmcp>=2.0.0
+numpy>=1.24.0
+fastapi>=0.115.0
+uvicorn>=0.24.0
+pydantic>=2.0.0
+
+# Training stack
+torch>=2.1.0
+transformers>=5.2.0
+peft>=0.12.0
+bitsandbytes>=0.43.0
+trl>=0.29.0
+datasets>=2.18.0
+accelerate>=0.30.0
+wandb>=0.17.0

@@ -1,0 +1,117 @@
+spec_version: 1
+name: medchain_env
+type: space
+runtime: fastapi
+app: server.app:app
+port: 8000
+
+description: >
+  MedChain Finals — a multi-actor, enterprise-grade hospital supply
+  coordination environment. The agent is the central procurement
+  coordinator; three LLM-driven ward actors (ICU, ER, General) submit
+  requests with private utility functions and may strategically inflate.
+  The agent navigates a realistic multi-system enterprise tool ecosystem
+  (legacy ERP with stale snapshots, live-but-noisy WMS, async supplier
+  portal, finance approval workflows, ward messaging) and can challenge
+  suspicious requests directly. Episodes are 8 event-based rounds (each
+  round = 2 simulated days). All reward signals are deterministic and
+  RLVR-compatible — ground truth lives in the simulation, actor dialogue
+  is decorative. Designed to span Theme #1 (multi-actor), Theme #2
+  (long-horizon coordination) and Theme #3.1 (enterprise tool ecosystems).
+
+tasks:
+  - id: multi_actor_coordination
+    name: Multi-Actor Hospital Supply Coordination (Finals)
+    description: >
+      Allocate scarce medical inventory across ICU, ER, and General wards
+      while interacting with five siloed enterprise systems. Ward actors
+      strategically pad requests; the agent must infer trust from history,
+      reputation, and event context, request_evidence when suspicious,
+      escalate_to_clinical_review when evidence still doesn't justify the
+      request, and shepherd large POs through finance approvals. ER surges
+      spike during MCI events. Seeds 0-49 are training; 50-59 are held-out
+      eval across light/medium/heavy difficulty buckets.
+    difficulty: tunable
+    max_rounds: 8
+    round_length_days: 2
+    expected_scores:
+      baseline_rubber_stamp: 0.41
+      discount_general_policy: 0.47
+      llm_with_briefing: 0.55_estimated
+      llm_with_evidence_and_approvals: 0.65_estimated
+
+action_space:
+  type: mcp_tools
+  tools:
+    # Legacy single-system tools
+    - read_inbox
+    - view_requests
+    - query_ward_history
+    - query_erp
+    - query_supplier
+    - submit_po
+    - file_justification
+    - quarantine_lot
+    - submit_allocation_plan
+    - advance_round
+    # Tier-1 multi-actor + enterprise tools
+    - get_round_briefing
+    - erp_oracle_get_inventory
+    - erp_oracle_get_pipeline
+    - wms_scan_inventory
+    - supplier_portal_request_quote
+    - supplier_portal_get_quote
+    - finance_sap_get_budget
+    - finance_sap_request_approval
+    - messaging_send_to_ward
+    # Audit / governance tools
+    - request_evidence
+    - escalate_to_clinical_review
+
+observation_space:
+  type: text
+  description: >
+    ASCII text. Each round opens with a brief (round, active events,
+    pending requests, budget). Tools return formatted tables (briefing,
+    inventory, history) or confirmation text (PO, allocation, evidence,
+    escalation, approval). Terminal advance_round step returns Final Score and a
+    reward decomposition so judges can see signal location.
+
+reward:
+  type: deterministic
+  formula:
+    network_service_level:    0.25
+    critical_service_level:   0.18
+    allocation_accuracy:      0.18
+    event_response:           0.12
+    budget_efficiency:        0.07
+    waste_control:            0.04
+    audit_score:              0.05    # combined: evidence-use + escalation
+    approval_workflow_score:  0.05    # finance workflow
+    tool_discovery_score:     0.03    # enterprise breadth
+    briefing_efficiency:      0.03    # context efficiency
+  justification_penalty_cap:  0.15
+
+multi_actor:
+  ward_count: 3
+  ward_actor_default: scripted
+  ward_actor_llm_optin: true
+  arbiter_default: scripted
+  arbiter_llm_optin: true
+  description: >
+    Ward actors are scripted-deterministic by default — RLVR signals are
+    well-defined without any external LLM. Set WARD_ACTOR_MODE=llm to
+    activate the optional LLM dialogue layer. The clinical-review arbiter
+    invoked by escalate_to_clinical_review follows the same pattern:
+    scripted by default (correct-by-construction, reads SimState), or
+    LLM-backed when ARBITER_MODE=llm. The audit-and-review loop (evidence
+    → escalation → rationale) is the canonical multi-actor surface.
+
+env_vars:
+  HF_TOKEN:        Optional — enables LLM mode for ward actors / arbiter
+  API_KEY:         Optional — alias for HF_TOKEN
+  API_BASE_URL:    Optional — default https://router.huggingface.co/v1
+  MODEL_NAME:      Optional — default openai/gpt-oss-20b:groq
+  WARD_MODEL_NAME: Optional — defaults to MODEL_NAME
+  WARD_ACTOR_MODE: Optional — set "llm" to enable LLM ward dialogue
+  ARBITER_MODE:    Optional — set "llm" to enable LLM clinical arbiter
