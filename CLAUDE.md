@@ -27,7 +27,7 @@ always sim-owned.
 
 **Local machine: CPU only** (`cuda=False`). Do not run GPU-dependent commands
 locally. If a task requires GPU execution (training, 4-bit quant checks, eval),
-ask the user to run the command — they have access to a **T4 GPU** via Google
+ask the user to run the command — they have access to an **A10G GPU** via Google
 Colab or Kaggle.
 
 Standard pattern when GPU is needed:
@@ -35,7 +35,7 @@ Standard pattern when GPU is needed:
 
 ## Dependencies
 
-All training dependencies are in **`requirements-train.txt`** (repo root of `openenv-hack/`).
+All training dependencies are in **`requirements-train.txt`** (repo root).
 ```bash
 pip install -r requirements-train.txt
 ```
@@ -240,20 +240,123 @@ first-use of any enterprise system +0.005.
 
 ---
 
+## OpenEnv Usage Pattern
+
+All agent code (training rollout, inference) interacts with the environment exclusively
+through the **OpenEnv client** (`client.py` → `MedchainEnv`). Never call
+`MedchainSimulation` or `MedchainEnvironment` directly from agent/training code.
+
+### Connection
+
+```python
+from client import MedchainEnv
+
+BASE_URL = "https://nik-55-medchain-openenv-final-round.hf.space"  # or any deployed URL
+
+env = MedchainEnv(base_url=BASE_URL)
+await env.connect()
+```
+
+### list_tools — discover tool schemas
+
+Call once per session. Returns `Tool` objects; convert to chat-template format with a helper.
+
+```python
+mcp_tools = await env.list_tools()   # List[Tool]  — cached on env after first call
+
+def _tools_to_chat_format(tools) -> list[dict]:
+    result = []
+    for t in tools:
+        schema = t.input_schema or {}
+        result.append({
+            "type": "function",
+            "function": {
+                "name": t.name,
+                "description": t.description or "",
+                "parameters": {
+                    "type": "object",
+                    "properties": schema.get("properties", {}),
+                    "required": schema.get("required", []),
+                },
+            },
+        })
+    return result
+
+TOOL_SCHEMAS = _tools_to_chat_format(mcp_tools)   # pass to tok.apply_chat_template
+```
+
+### reset — start an episode
+
+```python
+from openenv.core.env_server.mcp_types import CallToolAction
+
+result = await env.reset(seed=42, difficulty="medium", episode_id=str(uuid.uuid4()))
+obs     = result.observation
+brief   = obs.metadata.get("dashboard", "")   # round 1 briefing text
+```
+
+`seed` and `difficulty` are passed through to `MedchainEnvironment.reset()` on the server,
+which rebuilds the sim with the requested config — essential for GRPO (same seed × G rollouts).
+
+### step — dispatch a tool call
+
+```python
+action      = CallToolAction(tool_name="read_inbox", arguments={"filter": "unread"})
+step_result = await env.step(action)
+obs         = step_result.observation
+
+result_text = obs.metadata.get("tool_result", "")   # text returned by the tool
+done        = obs.done      # True only after advance_round on the final round
+reward      = obs.reward    # non-zero terminal reward after done=True; shaping otherwise
+```
+
+### advance_round — end of round / episode detection
+
+```python
+sr  = await env.step(CallToolAction(tool_name="advance_round", arguments={}))
+obs = sr.observation
+
+if obs.done:
+    final_reward = obs.reward          # episode complete
+    await env.close()
+else:
+    next_brief = obs.metadata.get("tool_result", "")   # next round's briefing
+    # reset context: messages = [system, next_brief]
+```
+
+### close
+
+```python
+await env.close()   # always call when done — cleans up WebSocket + Docker if used
+```
+
+### Sync wrapper for training rollouts
+
+The GRPO rollout function is synchronous (called by TRL). Wrap each async call with
+`asyncio.run()`:
+
+```python
+sr     = asyncio.run(env.step(CallToolAction(tool_name=name, arguments=args)))
+obs    = sr.observation
+result = obs.metadata.get("tool_result", "")
+```
+
+`asyncio.run()` works in Colab cells and script contexts. Do not use
+`loop.run_until_complete()` — it breaks in Jupyter when a loop is already running.
+
+---
+
 ## Training Notes
 
 ### `train.py` — shared module
 
-`train.py` exports `SYSTEM_PROMPT`, `TOOL_SCHEMAS`, `parse_tool_calls`, `build_dataset`,
-plus constants `MAX_TURNS`, `MAX_ROUND_TURNS`. **All training scripts import from here.**
-Do not rename or move it — it must stay at the repo root to be importable by Colab
-scripts that `sys.path.insert(0, WORK_DIR)`.
+`train.py` exports `SYSTEM_PROMPT`, `parse_tool_calls`, `build_dataset`, `medchain_rollout`,
+`reward_func`, `peft_config`, plus constants `MAX_TURNS`, `MAX_ROUND_TURNS`.
+Used by `train/train_hf_jobs.py` and offline scripts.
 
-The `SYSTEM_PROMPT` and `TOOL_SCHEMAS` in `train.py` reflect the legacy 10-tool surface.
-For training against the full Tier-1 surface (audit loop, enterprise systems, briefing):
-1. Swap `SYSTEM_PROMPT` for `INFERENCE_SYSTEM_PROMPT` from `server/prompts.py`
-2. Swap `TOOL_SCHEMAS` for `INFERENCE_TOOL_SCHEMAS`
-3. Increase `MAX_TURNS` — the audit loop adds 2-3 calls per round
+`train_colab.py` is **self-contained** — it does not import from `train.py`.
+`TOOL_SCHEMAS` in `train_colab.py` is discovered dynamically via `env.list_tools()`
+and therefore always reflects the full live tool surface (all 21 tools).
 
 ### Model: Qwen3.5-2B / 4B
 
@@ -267,22 +370,25 @@ For training against the full Tier-1 surface (audit loop, enterprise systems, br
 
 ### Rollout design (`medchain_rollout`)
 
-- Called with B prompts; expands to B×G episodes (32 on T4 with B=8, G=4).
+- Called with B prompts; expands to B×G episodes (32 on A10G with B=8, G=4).
+- Each episode connects to the deployed server via `MedchainEnv(base_url=BASE_URL)`.
+- Tool calls dispatched via `asyncio.run(env.step(CallToolAction(...)))`.
 - Context **reset after every `advance_round`** — `[system, round_brief]` only.
   This is critical: without it, 8-round episodes accumulate 3000–8000 token sequences
-  which makes each `model.generate()` call take 2–4 minutes on T4.
+  which makes each `model.generate()` call take 2–4 minutes.
 - `skip_special_tokens=True` when decoding into `ep["messages"]` — strips `<|im_end|>`,
   `<think>` before storing. `<tool_call>` tags are preserved (they are NOT special tokens).
 - Logprobs: `output_scores=True` → `log_softmax` + `gather`.
+- `env.close()` called immediately when `obs.done=True`; remaining envs closed after loop.
 
 ### Key constants (config.py)
-| Constant | A10G | T4 (Colab) | Notes |
-|---|---|---|---|
-| `B` | 8 | 4–8 | Seeds per step |
-| `G` | 4 | 4 | GRPO group size |
-| `MAX_NEW_TOKENS` | 256 | 256 | Tool calls <100 tokens |
-| `MAX_TURNS` | 60 | 60 | Total loop guard across 8 rounds |
-| `MAX_ROUND_TURNS` | 12 | 12 | Force advance_round if model loops |
+| Constant | A10G | Notes |
+|---|---|---|
+| `B` | 8 | Seeds per step |
+| `G` | 4 | GRPO group size |
+| `MAX_NEW_TOKENS` | 256 | Tool calls <100 tokens |
+| `MAX_TURNS` | 60 | Total loop guard across 8 rounds |
+| `MAX_ROUND_TURNS` | 12 | Force advance_round if model loops |
 
 ### LoRA config
 ```python

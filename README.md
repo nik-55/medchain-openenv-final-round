@@ -24,10 +24,12 @@ tags:
 |---|---|
 | **GitHub repository** | [nik-55/medchain-openenv-final-round](https://github.com/nik-55/medchain-openenv-final-round) |
 | **Environment (HF Space)** | [nik-55/medchain-openenv-final-round](https://huggingface.co/spaces/nik-55/medchain-openenv-final-round) |
-| **Training notebook** | [train_colab.py on GitHub](https://github.com/nik-55/medchain-openenv-final-round/blob/master/train_colab.py) |
-| **Blog post** | [blog.md on GitHub](https://github.com/nik-55/medchain-openenv-final-round/blob/master/blog.md) |
-| **WandB training run** | [view metrics](https://api.wandb.ai/links/nikm5502-nikhil-mahajna/5pri4ooa) |
 | **Demo video** | [youtu.be/L47ZVn1syAM](https://youtu.be/L47ZVn1syAM) |
+| **Blog post** | [blog.md on GitHub](https://github.com/nik-55/medchain-openenv-final-round/blob/master/blog.md) |
+| **Training notebook** | [train_colab.py on GitHub](https://github.com/nik-55/medchain-openenv-final-round/blob/master/train_colab.py) |
+| **WandB training run** | [view metrics](https://api.wandb.ai/links/nikm5502-nikhil-mahajna/5pri4ooa) |
+| **Training logs (HF Jobs stdout)** | [hf_jobs_grpo_training_stdout.txt](https://github.com/nik-55/medchain-openenv-final-round/blob/master/traces/hf_jobs_grpo_training_stdout.txt) |
+| Why the trained model falls short of its potential | [Why Training Is Unstable / Partially Done](#why-training-is-unstable--partially-done) |
 
 [![Watch the video](https://img.youtube.com/vi/L47ZVn1syAM/maxresdefault.jpg)](https://www.youtube.com/watch?v=L47ZVn1syAM)
 
@@ -368,6 +370,36 @@ Qwen3.5 is a hybrid model (18 GatedDeltaNet SSM layers + 6 standard attention la
 - `target_modules="all-linear"` in LoRA correctly covers 187 Linear layers and skips Conv1d — but this took a `check_qwen.py` run to verify.
 
 We wrote a 72-check sanity script (`train/check_qwen.py`) that you can run CPU-only to verify all of this before spending GPU time.
+
+---
+
+## Why Training Is Unstable / Partially Done
+
+This section is a transparent account of what I ran into — not excuses, just the actual experience.
+
+### The base model struggles with multi-step tool planning
+
+When I tested Qwen3.5-4B (base, no fine-tuning) against the environment, it was not able to plan tool calls coherently. Not in a "wrong answer" way — more fundamentally, it did not reliably understand *when* to call a tool, *which* tool to call next in a multi-step sequence, or how to carry context from one tool result forward into the next decision. For a single-turn question-answering task this might not matter. For an 8-round episode with 21 tools and causal dependencies between rounds, it was a blocker.
+
+The goal of training was to surface this planning ability as an **emergent property** through GRPO: expose the model to live episodes, let group variance signal which trajectories succeeded, and push the policy toward the good ones. That is the right approach — but it only works if the model can already generate enough *good* trajectories to learn from. With a 2B/4B base model that has weak tool-chaining out of the box, most rollouts in the early group are undifferentiated low scores, giving the gradient very little signal to work with.
+
+### Trajectories are heavy and exploration is expensive
+
+An 8-round episode with ~15 tool calls per round generates roughly 3,000–8,000 tokens of context per trajectory. With GRPO's group size G=4 and batch size B=8, each training step requires generating **32 full episodes in parallel**. On a single A10G with a 4-bit quantized 2B model this already pushes the VRAM ceiling. Moving to 4B, or relaxing the per-round context reset, pushes it over.
+
+Good exploration requires the model to try diverse sequences — audit loops, evidence requests, escalation paths — and the reward signal only arrives at the *end* of the 8-round episode, not per-step. This means the model needs many more trajectories, across a wider seed distribution, to see enough variation in the return signal. That is a compute budget problem.
+
+### GPU scheduling on HF Jobs did not cooperate
+
+I had access to HF credits for an A100 run. I submitted the job via `train/train_hf_jobs.py`. The job sat in the scheduling queue for an extended period without starting — not a code failure, just queue wait time that consumed most of the available compute window. This is logged in the HF Jobs stdout in `traces/hf_jobs_grpo_training_stdout.txt`. I am not attributing fault here; this is just what happened.
+
+### The training harness is solid — the bottleneck is scale
+
+The training script (`train/train_hf_jobs.py`, `train_colab.py`) is robust. It batches across turns from multiple concurrent episodes — each trajectory can be at a different round turn during a single training step — which is the correct design for multi-turn GRPO. The rollout function connects to the live simulation per episode, computes token-level log-probabilities, and assembles the GRPO objective correctly. The 72-check `train/check_qwen.py` script validates the entire stack from model load through LoRA gradient flow.
+
+The issue is not the harness design. The issue is that the exploration budget required to get the policy to *emit good planning trajectories* as an emergent phenomenon is larger than what a single A10G (or a single hackathon window) can deliver. The reward curve in the WandB run does climb — from ~0.13 to ~0.28–0.35 — which shows the signal is real. It just needs more steps, more VRAM, and ideally some curriculum work (start with light-difficulty episodes, gate heavy-difficulty in later) to make the exploration tractable.
+
+I am planning to continue this work after the hackathon — proper curriculum scheduling, longer training runs, and more investigation into what it takes for the planning behaviour to emerge robustly.
 
 ---
 

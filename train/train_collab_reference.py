@@ -14,10 +14,16 @@
 # - File purchase orders, track lot expiry, respond to supply-chain events
 # - All rewards are deterministic — no LLM judge in the loop
 #
+# ## Quick links
+# - **WandB run**: https://api.wandb.ai/links/nikm5502-nikhil-mahajna/5pri4ooa
+# - **HF Model**: https://huggingface.co/nik-55/medchain-grpo-qwen35-2b
+# - **Environment repo**: https://github.com/nik-55/sst-final
+#
 # ## GPU requirements
-# - **A10G (24 GB)**: B=8, G=4, MAX_NEW_TOKENS=256 → ~12 GB peak VRAM (bf16)
+# - **T4 (16 GB)**: B=8, G=4, MAX_NEW_TOKENS=256 → ~11 GB peak VRAM (fp16)
+# - **A10G (24 GB)**: increase B to 16 (see train/train_hf_jobs.py)
 # - **A100 (80 GB)**: increase B to 32
-
+#
 # ## How to run
 # Run cells top-to-bottom. Re-running any cell is safe — guards are in place.
 # Set WANDB_API_KEY and HF_TOKEN in Cell 4 before running Cell 11 (training).
@@ -50,9 +56,9 @@ print(f"CUDA cap    : sm_{props.major}{props.minor}")
 print(f"BF16 hw     : {torch.cuda.is_bf16_supported()}")
 
 # ── Clone / update repo ───────────────────────────────────────────────────────
-REPO_URL = "https://github.com/nik-55/medchain-openenv-final-round.git"
-REPO_DIR = os.path.join(COLAB_ROOT, "medchain-openenv-final-round")
-WORK_DIR = REPO_DIR
+REPO_URL = "https://github.com/nik-55/sst-final.git"
+REPO_DIR = os.path.join(COLAB_ROOT, "sst-final")
+WORK_DIR = os.path.join(REPO_DIR, "openenv-hack")
 
 if not os.path.exists(REPO_DIR):
     print(f"\nCloning {REPO_URL} ...")
@@ -85,8 +91,8 @@ subprocess.run([
 ], check=True)
 
 # causal-conv1d speeds up Qwen3.5 GatedDeltaNet Conv1d layers on GPU.
-# If the CUDA build fails, torch fallback is numerically identical — training
-# still works, just slightly slower.
+# If the CUDA build fails (T4 Turing wheels can be missing), torch fallback
+# is numerically identical — training still works, just slightly slower.
 print("\nTrying causal-conv1d ...")
 r = subprocess.run(
     [sys.executable, "-m", "pip", "install", "-q", "causal-conv1d"],
@@ -177,24 +183,19 @@ else:
 os.makedirs(CKPT_DIR, exist_ok=True)
 print(f"CKPT_DIR = {CKPT_DIR}")
 
-# %% ── Cell 6: Constants · system prompt · tool schemas · helpers ────────────
-import asyncio
-sys.path.insert(0, WORK_DIR)                       # for server.* imports
-sys.path.insert(0, os.path.dirname(WORK_DIR))      # for medchain_env package import
-from medchain_env import MedchainEnv, CallToolAction
-from datasets import Dataset
-
-# ── Set this to your deployed MedChain server URL ────────────────────────────
-BASE_URL = "https://nik-55-medchain-openenv-final-round.hf.space"
+# %% ── Cell 6: Constants + dtype auto-detection ──────────────────────────────
+# Import shared constants from train.py (SYSTEM_PROMPT, parse_tool_calls, etc.)
+from train import SYSTEM_PROMPT, parse_tool_calls, MAX_TURNS, MAX_ROUND_TURNS, build_dataset, TOOL_SCHEMAS
+from server.simulation import MedchainSimulation
+from server.tasks import make_task_config
 
 MODEL_ID       = "Qwen/Qwen3.5-2B"
 G              = 4    # rollouts per seed — keep at 4 for GRPO advantage quality
-B              = 8    # seeds per step — 8×4=32 active episodes; ~12 GB peak on A10G
+B              = 8    # seeds per step — 8×4=32 active episodes; output_scores peak ~8 GB, total ~11 GB on T4
 MAX_NEW_TOKENS = 256  # tool calls are <100 tokens; 256 is safe headroom
-MAX_TURNS      = 60   # total inference loop guard across all 8 rounds
-MAX_ROUND_TURNS = 12  # force advance_round if model loops within a round
 
-# A10G (Ampere sm_86) has hardware BF16 — auto-selected.
+# T4 (Turing sm_75) has no hardware BF16 — use FP16.
+# Ampere+ (A100, L4, A10) support BF16 natively — auto-selected.
 COMPUTE_DTYPE = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
 USE_BF16      = torch.cuda.is_bf16_supported()
 USE_FP16      = not USE_BF16
@@ -212,146 +213,7 @@ print(f"  Model weights (4-bit 2B)  : ~1.5 GB")
 print(f"  output_scores peak        : ~{score_peak_gb:.1f} GB   ← biggest variable")
 print(f"  KV cache + activations    : ~1-2 GB")
 print(f"  Total peak (rough)        : ~{1.5 + score_peak_gb + 1.5:.1f} GB")
-print(f"\n  A10G has 24 GB → {'OK' if 1.5 + score_peak_gb + 1.5 < 22 else 'TIGHT — reduce B'}")
-
-# ── System prompt ─────────────────────────────────────────────────────────────
-SYSTEM_PROMPT = """You are the central supply coordinator for a hospital network running 8 rounds per episode.
-Each round lasts 2 simulated days. After advance_round your conversation history is wiped — only the round brief carries over.
-
-═══ MANDATORY ROUND SEQUENCE ═══
-1. read_inbox(filter="unread")                         ← ALWAYS first; catches crises and recall alerts
-2. view_requests()                                      ← see what wards are asking for (may be padded)
-3. query_erp(table="pipeline_orders")                  ← CHECK IN-TRANSIT ORDERS BEFORE ORDERING MORE
-4. query_erp(table="inventory", location="central_pharmacy")  ← current on-hand stock
-   [steps 3+4 can be called in parallel in a single turn]
-5. query_ward_history / query_supplier                  ← additional context if needed (1-2 calls max)
-   [multiple query_ward_history calls can be parallelised across wards in one turn]
-6. submit_po(...)  [+ file_justification if expedited]  ← order ONLY the net gap (see PO rules below)
-7. quarantine_lot(...)  ← ONLY if inbox contains a recall or cold-chain breach alert
-8. submit_allocation_plan(plan_json=...)                ← REQUIRED every round; see rules below
-9. advance_round()                                      ← LAST call; ends the round
-
-═══ REFERENCE — VALID IDs (use EXACTLY these strings) ═══
-Locations (for query_erp and submit_po destination_id):
-  central_pharmacy   ward_icu   ward_er   ward_general
-
-Suppliers (for query_supplier and submit_po):
-  MEDLINE   (lead 2d, cost 1.0×, all SKUs)
-  BACKUP-B  (lead 3d, cost 1.3×, all SKUs — fallback when MEDLINE disrupted)
-  FASTMED   (lead 1d, cost 1.8×, all SKUs — use only for life-critical emergencies)
-
-═══ PURCHASE ORDER RULES (critical for budget score) ═══
-• ALWAYS query pipeline_orders BEFORE placing any PO. Your context is wiped after each round —
-  last round's orders are still in transit and will appear in pipeline_orders.
-• Derive consumption from query_ward_history — do NOT invent or memorise fixed quantities.
-• Compute for each SKU: net_qty = history_avg_consumption - in_transit_qty - surplus_on_hand.
-  *** If net_qty ≤ 0: DO NOT call submit_po. Calling submit_po with quantity ≤ 0 is FORBIDDEN. ***
-  *** If net_qty > 0: call submit_po ONCE with quantity = net_qty. ONE call per SKU total. ***
-• Sum need across all wards before calling submit_po — never submit per-ward separately.
-  All stock routes through central_pharmacy regardless of destination.
-• Do NOT call view_requests() more than once per round.
-
-═══ WARD SKU REFERENCE ═══
-ward_icu     : BLOOD-RBC  BLOOD-PLT  BLOOD-FFP  IV-SAL-500  ANTIBIO-01  OXY-MASK  SYR-10  GLOVE-001
-ward_er      : BLOOD-RBC  BLOOD-PLT  BLOOD-FFP  IV-SAL-500  ANTIBIO-01  OXY-MASK  SYR-10  GLOVE-001  GAUZE-01
-ward_general : IV-SAL-500  ANTIBIO-01  SYR-10  GLOVE-001  MASK-001  GAUZE-01
-
-═══ ALLOCATION PLAN RULES (critical for score) ═══
-• Include ALL THREE wards — ward_icu, ward_er, ward_general — every single round.
-• Include EVERY SKU listed above for each ward. Omitting a SKU is treated as 0 (stockout penalty).
-• Never allocate 0 for any SKU. Use ward_history average consumption when uncertain.
-• Start from request quantities, then discount by the inflation factor (wards pad 10-60%).
-  ICU pads ~10%, ER pads ~20-50%, General pads ~25-60% — allocate closer to true need.
-• Blood products (BLOOD-RBC, BLOOD-PLT, BLOOD-FFP) are CRITICAL for ICU and ER — never stockout.
-• Allocation comes from central_pharmacy stock. Submit POs first if stock is low.
-
-═══ QUERY RULES ═══
-• query_erp: location and sku are optional — but NEVER pass null or empty string.
-  Omit the field entirely when you want all rows: query_erp(table="inventory", location="central_pharmacy")
-• query_supplier: use only MEDLINE, BACKUP-B, or FASTMED — no other IDs exist.
-• file_justification ticket_id: use the PO ticket ID returned by submit_po response, not a guessed ID.
-
-═══ EVENTS TO WATCH FOR ═══
-• MCI (mass casualty): blood demand ×2.8 at ICU+ER — pre-position via expedited FASTMED orders.
-• Supplier disruption: switch to BACKUP-B for urgent items; FASTMED for life-critical.
-• Product recall: quarantine_lot at every listed location using the EXACT lot_id string from the inbox message body — never invent or guess it.
-• Cold-chain breach: lot is auto-quarantined by the system; place emergency replenishment order — no quarantine_lot call needed."""
-
-# ── Discover tool schemas via OpenEnv list_tools ──────────────────────────────
-def _tools_to_chat_format(tools) -> list[dict]:
-    """Convert MCP Tool objects to the dict format expected by apply_chat_template."""
-    result = []
-    for t in tools:
-        schema = t.input_schema or {}
-        result.append({
-            "type": "function",
-            "function": {
-                "name": t.name,
-                "description": t.description or "",
-                "parameters": {
-                    "type": "object",
-                    "properties": schema.get("properties", {}),
-                    "required": schema.get("required", []),
-                },
-            },
-        })
-    return result
-
-async def _discover_tools():
-    env = MedchainEnv(base_url=BASE_URL)
-    await env.connect()
-    tools = await env.list_tools()
-    await env.close()
-    return tools
-
-_mcp_tools   = asyncio.run(_discover_tools())
-TOOL_SCHEMAS = _tools_to_chat_format(_mcp_tools)
-print(f"Discovered {len(TOOL_SCHEMAS)} tools: {[t['function']['name'] for t in TOOL_SCHEMAS]}")
-
-# ── parse_tool_calls ──────────────────────────────────────────────────────────
-_INT_PARAMS: dict[str, set[str]] = {
-    t["function"]["name"]: {
-        k for k, v in t["function"]["parameters"].get("properties", {}).items()
-        if v.get("type") == "integer"
-    }
-    for t in TOOL_SCHEMAS
-}
-
-def parse_tool_calls(text: str) -> list[dict]:
-    """Parse Qwen3.5 native XML tool call format."""
-    results = []
-    for block in re.finditer(r'<tool_call>(.*?)</tool_call>', text, re.DOTALL):
-        inner = block.group(1)
-        fn = re.search(r'<function=([^>]+)>', inner)
-        if not fn:
-            continue
-        name = fn.group(1).strip()
-        args = {}
-        for p in re.finditer(r'<parameter=([^>]+)>\n?(.*?)\n?</parameter>', inner, re.DOTALL):
-            k, v = p.group(1).strip(), p.group(2).strip()
-            if k in _INT_PARAMS.get(name, set()):
-                try:
-                    v = int(v)
-                except (ValueError, TypeError):
-                    pass
-            args[k] = v
-        results.append({"name": name, "arguments": args})
-    return results
-
-# ── build_dataset ─────────────────────────────────────────────────────────────
-def build_dataset() -> Dataset:
-    random.seed(42)
-    seeds_list = list(range(50)) * 20  # 1000 rows; seeds 0-49 each ×20
-    diffs_list = [random.choice(["light", "medium", "heavy"]) for _ in seeds_list]
-    return Dataset.from_dict({
-        "prompt": [
-            [
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": f"seed={s};diff={d}"},
-            ]
-            for s, d in zip(seeds_list, diffs_list)
-        ],
-    }).shuffle(seed=42)
+print(f"\n  T4 has 16 GB → {'OK' if 1.5 + score_peak_gb + 1.5 < 14 else 'TIGHT — reduce B'}")
 
 # %% ── Cell 7: Load model + tokenizer ────────────────────────────────────────
 import torch.nn as nn
@@ -395,10 +257,8 @@ print(f"\nVRAM after load: {torch.cuda.memory_allocated()/1e9:.2f} GB allocated 
       f"/ {torch.cuda.memory_reserved()/1e9:.2f} GB reserved")
 
 # %% ── Cell 8: Rollout + reward functions ────────────────────────────────────
-# Uses OpenEnv client (MedchainEnv) for all env interactions.
-# Terminal reward: MedchainEnvironment._handle_call_tool sets reward=sim.get_last_reward()
-# when advance_round completes the episode. OpenEnv serialises it into the HTTP response;
-# client._parse_result reads it as obs.reward (fallback: parses "Final Score:" from text).
+# Identical logic to train.py::medchain_rollout.
+# Only differences: MAX_NEW_TOKENS=256 (was 512) and VRAM debug prints.
 
 _current_rewards: list[float] = []
 
@@ -413,23 +273,17 @@ def medchain_rollout(prompts, trainer) -> dict:
     tok    = trainer.processing_class
     _model.eval()
 
-    # ── Init B*G episodes via OpenEnv client (same pattern as inference.py) ────
-    async def _init_episode(seed, diff):
-        env = MedchainEnv(base_url=BASE_URL)
-        await env.connect()
-        result = await env.reset(seed=seed, difficulty=diff, episode_id=str(uuid.uuid4()))
-        brief = result.observation.metadata.get("dashboard", "")
-        return env, brief
-
+    # ── Init B*G episodes ────────────────────────────────────────────────────
     episodes = []
     for prompt in prompts:
         meta = prompt[-1]["content"]
         seed = int(re.search(r"seed=(\d+)", meta).group(1))
         diff = re.search(r"diff=(\w+)", meta).group(1)
         for _ in range(G):
-            env, brief = asyncio.run(_init_episode(seed, diff))
+            sim   = MedchainSimulation(make_task_config(seed=seed, difficulty=diff))
+            brief = sim.reset(seed=seed, episode_id=str(uuid.uuid4()))
             episodes.append({
-                "env":              env,
+                "sim":              sim,
                 "messages":         [{"role": "system", "content": SYSTEM_PROMPT},
                                      {"role": "user",   "content": brief}],
                 "comp_ids":         [],
@@ -512,22 +366,21 @@ def medchain_rollout(prompts, trainer) -> dict:
                 })
             else:
                 for tc in tool_calls:
-                    name   = tc.get("name", "")
-                    args   = tc.get("arguments", {})
-                    sr     = asyncio.run(ep["env"].step(CallToolAction(tool_name=name, arguments=args)))
-                    obs    = sr.observation
-                    result = obs.metadata.get("tool_result", "")
-                    if not result:
-                        result = f"ERROR: {obs.metadata}"
-                        print(f"  [ep{i}] TOOL ERROR {name}({args}): {obs.metadata}")
+                    name, args, sim = tc.get("name", ""), tc.get("arguments", {}), ep["sim"]
+                    try:
+                        result = (getattr(sim, name)(**args)
+                                  if hasattr(sim, name)
+                                  else f"ERROR: Unknown tool '{name}'")
+                    except Exception as e:
+                        result = f"ERROR: {e}"
+                        print(f"  [ep{i}] TOOL ERROR {name}({args}): {e}")
 
                     ep["messages"].append({"role": "user", "content": f"<tool_response>{result}</tool_response>"})
 
                     if name == "advance_round":
-                        if obs.done:
+                        if sim._done:
                             ep["done"]   = True
-                            ep["reward"] = obs.reward if obs.reward is not None else 0.0
-                            asyncio.run(ep["env"].close())
+                            ep["reward"] = sim._last_reward
                             print(f"  [ep{i}] DONE  reward={ep['reward']:.4f}")
                         else:
                             ep["messages"]    = [
@@ -541,17 +394,15 @@ def medchain_rollout(prompts, trainer) -> dict:
             ep["round_turns"] += 1
             if not ep["done"] and ep["round_turns"] >= MAX_ROUND_TURNS:
                 print(f"  [ep{i}] FORCE advance_round (stuck {ep['round_turns']} turns in round)")
-                sr  = asyncio.run(ep["env"].step(CallToolAction(tool_name="advance_round", arguments={})))
-                obs = sr.observation
-                if obs.done:
+                result = ep["sim"].advance_round()
+                if ep["sim"]._done:
                     ep["done"]   = True
-                    ep["reward"] = obs.reward if obs.reward is not None else 0.0
-                    asyncio.run(ep["env"].close())
+                    ep["reward"] = ep["sim"]._last_reward
                     print(f"  [ep{i}] DONE (forced)  reward={ep['reward']:.4f}")
                 else:
                     ep["messages"]    = [
                         {"role": "system", "content": SYSTEM_PROMPT},
-                        {"role": "user",   "content": obs.metadata.get("tool_result", "")},
+                        {"role": "user",   "content": result},
                     ]
                     ep["round_turns"] = 0
 
@@ -561,11 +412,6 @@ def medchain_rollout(prompts, trainer) -> dict:
             vram   = torch.cuda.memory_allocated() / 1e9
             print(f"  [rollout step {step:3d}] active={len(active):2d}  "
                   f"done={n_done:2d}/{len(episodes)}  VRAM={vram:.2f} GB")
-
-    # Close any envs that didn't finish (hit MAX_TURNS without advance_round done)
-    for ep in episodes:
-        if not ep["done"]:
-            asyncio.run(ep["env"].close())
 
     _current_rewards = [ep["reward"] for ep in episodes]
 
@@ -659,11 +505,11 @@ print("Base eval done → eval_results/base.json")
 # %% ── Cell 11: WandB init + train ───────────────────────────────────────────
 MAX_STEPS  = 500
 LR         = 1e-4
-SAVE_STEPS = 25   # checkpoint every 25 steps — guards against Colab disconnects
+SAVE_STEPS = 25   # more frequent than train.py default (50) — Colab may disconnect
 
 wandb.init(
     project = "medchain-grpo",
-    name    = f"qwen35-2b-{torch.cuda.get_device_name(0).replace(' ', '_')}-B{B}G{G}",
+    name    = f"qwen35-2b-{props.name.replace(' ', '_')}-B{B}G{G}",
     config  = dict(
         model_id       = MODEL_ID,
         B              = B,
