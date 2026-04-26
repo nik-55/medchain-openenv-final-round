@@ -20,11 +20,11 @@ MedChain is an OpenEnv-compliant simulation of hospital supply-chain coordinatio
 
 The three wards are not passive inputs. They are persistent scripted agents with distinct personalities, incentive structures, and memory of past interactions.
 
-**ICU** is the highest-priority ward and almost never inflates requests. It submits honest numbers and provides full evidence when challenged. If ICU is requesting more than usual, there is usually a real clinical reason worth understanding.
+**ICU** is the highest-priority ward and almost never inflates requests. It submits honest numbers and returns full evidence when `request_evidence` is called. If ICU is requesting more than usual, there is usually a real clinical reason worth understanding.
 
 **ER** is volatile. It pads moderately in normal rounds but also experiences genuine mass-casualty surge events where a 3× request is completely legitimate. The difficulty is that the ER defends its requests aggressively in both cases. Distinguishing a real surge from strategic inflation requires digging into census figures and patient acuity scores — and sometimes the ER redacts one field when it knows its numbers are hard to justify. That redaction itself is a signal.
 
-**General ward** is a chronic over-requester. It inflates requests roughly 40% of rounds and backs down immediately when challenged — but only if you actually challenge it. Left unchecked, it quietly drains the budget and drives up hoarding pressure across the network.
+**General ward** is a chronic over-requester. It inflates requests roughly 40% of rounds, but `escalate_to_clinical_review` on a padded request will return a REDUCE or DENY verdict that locks the allocation down. Left without escalation, it quietly drains the budget and drives up hoarding pressure across the network.
 
 These personalities are fixed. But the behavior is not. Reputations carry across rounds. A ward that successfully defended a padded request arrives at the next round with slightly elevated confidence and hoarding pressure. One that gets caught padding loses standing and pads less aggressively going forward. This means the agent's decisions in round 3 directly shape what round 4 looks like.
 
@@ -32,7 +32,7 @@ These personalities are fixed. But the behavior is not. Reputations carry across
 
 ## How the Agent Interacts with the World
 
-The environment exposes **21 MCP tools across five enterprise silos**. A complete round unfolds across several distinct phases.
+The environment exposes **21 MCP tools across five enterprise systems**. A complete round unfolds across several distinct phases.
 
 ### Getting oriented
 
@@ -172,7 +172,7 @@ Qwen3.5 is not a standard transformer. It has 18 GatedDeltaNet (SSM-style) layer
 
 More subtle: with `enable_thinking=False`, the model still emits an empty `<think>\n\n</think>` stub before the actual response. I initially stripped this as a malformed generation before realising it's by design — it's how Qwen3.5 signals non-thinking mode. Stripping it before conversation history insertion breaks the chat template on the next turn in ways that are hard to diagnose.
 
-Tool call parsing required care too. The model wraps calls in `<tool_call>...</tool_call>` tags that are plain text (not special tokens), so `skip_special_tokens=True` correctly preserves them. Using `skip_special_tokens=False` instead leaks `<|im_end|>` tokens into stored messages, which corrupts the chat template.
+Tool call format required care. Qwen3.5 actually has two distinct formats depending on how you call the tokenizer. When you pass `tools=` to `apply_chat_template`, the chat template injects a `<tools>` schema block and the model uses its **native XML format**: `<tool_call><function=NAME><parameter=KEY>value</parameter></function></tool_call>`. When you don't pass `tools=` — which is the training setup here — the model uses a JSON format: `<tool_call>{"name": "...", "arguments": {...}}</tool_call>`. The training prompt uses the JSON path, which the model learns to produce via the format examples in the system prompt. Either way, `<tool_call>` is plain text, not a special token, so `skip_special_tokens=True` correctly preserves it while stripping `<|im_end|>` and `<think>`. Using `skip_special_tokens=False` leaks `<|im_end|>` tokens into stored messages, corrupting the chat template on the next turn.
 
 I wrote a 72-check sanity script (`train/check_qwen.py`, CPU-safe) that validates all of this before spending GPU time. If you're using Qwen3.5 for tool-calling RL, run it first.
 

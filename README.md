@@ -22,10 +22,14 @@ tags:
 
 | Resource | Link |
 |---|---|
+| **GitHub repository** | [nik-55/medchain-openenv-final-round](https://github.com/nik-55/medchain-openenv-final-round) |
 | **Environment (HF Space)** | [nik-55/medchain-openenv-final-round](https://huggingface.co/spaces/nik-55/medchain-openenv-final-round) |
 | **Training notebook** | [train_colab.py on GitHub](https://github.com/nik-55/medchain-openenv-final-round/blob/master/train_colab.py) |
 | **Blog post** | [blog.md on GitHub](https://github.com/nik-55/medchain-openenv-final-round/blob/master/blog.md) |
 | **WandB training run** | [view metrics](https://api.wandb.ai/links/nikm5502-nikhil-mahajna/5pri4ooa) |
+| **Demo video** | [youtu.be/L47ZVn1syAM](https://youtu.be/L47ZVn1syAM) |
+
+[![Watch the video](https://img.youtube.com/vi/L47ZVn1syAM/maxresdefault.jpg)](https://www.youtube.com/watch?v=L47ZVn1syAM)
 
 ---
 
@@ -33,7 +37,9 @@ tags:
 
 MedChain is an enterprise simulation where an LLM agent acts as the **central pharmacy coordinator** for a three-ward hospital network. It has to balance critical medical supplies — blood products, IV antibiotics, surgical consumables — across ICU, ER, and General wards over 8 consecutive rounds (each round = 2 simulated days).
 
-What makes it hard: **every information source disagrees with every other one**. The legacy ERP is stale by one round. The warehouse scanner is live but noisy. The supplier portal is async — quotes arrive next round. Wards submit inflated requests (we call this "padding"), and the only way to know if a request is legitimate is to dig into census data, patient acuity scores, and historical consumption — then escalate contested cases to a binding clinical-review board.
+What makes it hard: the simulation itself runs as a classical, deterministic state machine — lot expiry, ward consumption rates, supplier lead times, finance approval queues, and ward reputation dynamics all evolve by fixed rules. The agent's role is to reason over this system with incomplete, noisy, and lagged visibility, across a horizon where decisions made now compound into outcomes several rounds later.
+
+A few concrete examples of this temporal dependency: skip the audit loop in round 2 and the General ward's hoarding pressure stays elevated for the rest of the episode, inflating every subsequent request. Submit a large purchase order in round 4 without pre-filing a finance justification and it sits behind an approval gate, arriving a full round late while the ICU is already running short. Miss an MCI surge flagged in the inbox and cut the ER's blood-product request as padding — what looked suspicious was legitimate, and critical-service-level takes a permanent hit that no round-7 recovery can undo. The LLM has to model not just the current state it can observe, but the causal chain connecting today's tool calls to next round's constraint landscape.
 
 No LLM-judged rewards. Every score is computed deterministically from simulation state.
 
@@ -41,34 +47,193 @@ No LLM-judged rewards. Every score is computed deterministically from simulation
 
 ## Why This Environment
 
-**Theme #3.1 — Professional Tasks / World Modeling.** The theme asks for environments where models must do real, hard work against dynamic systems rather than exploiting shortcuts. MedChain puts the agent inside a live enterprise workflow: five siloed data sources with different reliability guarantees, a purchasing pipeline with approval gates, and a governance process for challenging ward requests. Querying a single system and acting on its output is the shortcut — the reward formula actively penalises it.
+**Theme #3.1 — Professional Tasks / World Modeling.** The theme asks for environments where models must do real, hard work against dynamic systems rather than exploiting shortcuts. MedChain puts the agent inside a live enterprise workflow: five systems with different reliability and latency characteristics, a purchasing pipeline with finance approval gates, and an audit loop — `request_evidence`, cross-referencing census data and historical consumption, escalating contested cases to a clinical-review board — for requests that don't add up. Querying a single system and acting on its output is the shortcut; the reward formula actively penalises it.
 
-**Multi-actor dynamics.** The three wards are persistent scripted agents with their own incentive structures. The General ward over-requests most rounds. The ER defends aggressive requests hard when a real mass-casualty surge is incoming — which sometimes makes a 3× blood-product request legitimate. The ICU almost never inflates. The agent cannot treat these actors as a static environment; it has to model their behaviour, issue challenges, and read strategic redaction as a signal.
+**Multi-actor dynamics.** The three wards are persistent scripted agents with their own incentive structures. The General ward over-requests most rounds. The ER defends aggressive requests hard when a real mass-casualty surge is incoming — which sometimes makes a 3× blood-product request legitimate. The ICU almost never inflates. The agent cannot treat these actors as a static environment; it has to model their behaviour, call `request_evidence` on suspicious requests, and read strategic redaction as a signal.
 
 **Long-horizon consequences.** A decision made in round 3 directly shapes round 4 difficulty. Correctly flagging a padding attempt lowers that ward's hoarding pressure next round. Filing a rationale that cites disclosed evidence raises ward trust and improves future cooperation. Over-allocating to a chronic padder in early rounds compounds into worse budget headroom and higher hoarding pressure in later rounds. There is no way to recover from a locally-greedy policy — the episode has memory.
 
 ---
 
-## Quick Start
+## Setup & Running
+
+### Prerequisites
+
+- Python 3.10+ with `uv` — [install uv](https://docs.astral.sh/uv/getting-started/installation/)
+- Docker (optional, for a fully isolated server container)
+
+### Option A — Docker (recommended for evaluation)
 
 ```bash
-# Run the environment server
+# Build the image
 docker build -t medchain-env:finals -f Dockerfile .
+
+# Start the server on port 8000
 docker run -p 8000:8000 medchain-env:finals
+```
 
-# Or with UV (local dev)
-uv run server --host 0.0.0.0 --port 8000
+The server is ready when you see `Application startup complete` in the logs.
 
-# Evaluate any OpenAI-compatible model against the environment
+### Option B — UV (local dev, no Docker)
+
+```bash
+# Install runtime dependencies
+uv sync
+
+# Start the server
+uv run uvicorn server.app:app --host 0.0.0.0 --port 8000
+```
+
+### Option C — Live HF Space (no setup)
+
+The environment is already running at:
+
+```
+https://nik-55-medchain-openenv-final-round.hf.space
+```
+
+Use this URL as `BASE_URL` in any script below — no Docker or `uv` required.
+
+---
+
+## Using the Environment
+
+### Python client (quick smoke test)
+
+Install the client package (from the repo root):
+
+```bash
+pip install -e .
+```
+
+Then run the included smoke test against the live HF Space:
+
+```bash
+python tests/test_openenv_hf_space.py
+```
+
+This connects, resets, calls `list_tools`, and steps through a minimal round
+(`read_inbox → view_requests → get_round_briefing → query_ward_history →
+submit_allocation_plan → advance_round`), printing tool output and rewards at each step.
+
+### Python client (custom agent loop)
+
+```python
+import asyncio
+from medchain_env import CallToolAction, MedchainEnv
+
+BASE_URL = "https://nik-55-medchain-openenv-final-round.hf.space"
+# Or point to your local server: BASE_URL = "http://localhost:8000"
+
+async def main():
+    env = MedchainEnv(base_url=BASE_URL)
+    await env.connect()
+    try:
+        # ── Reset ──────────────────────────────────────────────────────
+        result = await env.reset(task="multi_actor_coordination")
+        print(result.observation.metadata["dashboard"])
+
+        # ── Discover tools ─────────────────────────────────────────────
+        tools = await env.list_tools()
+        print([t.name for t in tools])
+
+        # ── Step through one round ─────────────────────────────────────
+        for tool_name, args in [
+            ("read_inbox",            {}),
+            ("view_requests",         {}),
+            ("get_round_briefing",    {}),
+            ("submit_allocation_plan",
+             {"plan_json": '{"ward_icu":{"BLOOD-RBC":10},"ward_er":{"BLOOD-RBC":5}}'}),
+            ("advance_round",         {}),
+        ]:
+            r = await env.step(CallToolAction(tool_name=tool_name, arguments=args))
+            print(r.observation.metadata.get("tool_result", ""))
+            if r.observation.done:
+                break
+    finally:
+        await env.close()
+
+asyncio.run(main())
+```
+
+### Episode structure
+
+Each episode is **8 rounds** (each round = 2 simulated days). The canonical loop per round:
+
+```
+read_inbox()                       ← check for alerts (MCI, recalls, disruptions)
+view_requests()                    ← see what each ward is requesting this round
+get_round_briefing()               ← consolidated dashboard (budget, events, requests)
+[optional investigation tools]     ← query_ward_history, request_evidence, wms_scan_inventory, …
+submit_allocation_plan(plan_json)  ← commit allocations for this round (once per round)
+[optional procurement tools]       ← submit_po, finance_sap_request_approval, …
+advance_round()                    ← resolve consumption, receive deliveries, start next round
+```
+
+Call `submit_allocation_plan` **exactly once** per round, then `advance_round`. Any
+tool call after `advance_round` lands in the next round's budget.
+
+`plan_json` must be a JSON object keyed by ward ID:
+
+```json
+{
+  "ward_icu":     {"BLOOD-RBC": 13, "BLOOD-PLT": 6, "BLOOD-FFP": 8},
+  "ward_er":      {"BLOOD-RBC": 6,  "BLOOD-PLT": 3},
+  "ward_general": {"GLOVE-001": 20, "IV-SAL-500": 15}
+}
+```
+
+### The 21 tools
+
+| Category | Tool | Required params |
+|---|---|---|
+| **Coordination** | `get_round_briefing` | — |
+| | `view_requests` | — |
+| | `read_inbox` | — |
+| | `submit_allocation_plan` | `plan_json` |
+| | `advance_round` | — |
+| **Investigation** | `query_ward_history` | `ward_id` |
+| | `query_erp` | `table` |
+| | `query_supplier` | `supplier_id` |
+| **Enterprise systems** | `erp_oracle_get_inventory` | — |
+| | `erp_oracle_get_pipeline` | — |
+| | `wms_scan_inventory` | — |
+| | `supplier_portal_request_quote` | `supplier_id`, `product_id`, `quantity` |
+| | `supplier_portal_get_quote` | `quote_id` |
+| | `finance_sap_get_budget` | — |
+| | `finance_sap_request_approval` | `approval_id`, `justification` |
+| | `messaging_send_to_ward` | `ward_id`, `body` |
+| **Audit & governance** | `request_evidence` | `ward_id`, `sku` |
+| | `escalate_to_clinical_review` | `ward_id`, `sku`, `concern` |
+| **Procurement** | `submit_po` | `supplier_id`, `product_id`, `destination_id`, `quantity` |
+| | `file_justification` | `ticket_id`, `reason` |
+| | `quarantine_lot` | `location_id`, `sku`, `lot_id` |
+
+### Evaluating a model
+
+`run_llm_eval.py` drives any OpenAI-compatible model through full episodes:
+
+```bash
 export HF_TOKEN=hf_...
+export API_BASE_URL=https://router.huggingface.co/v1
+export MODEL_NAME=openai/gpt-oss-120b:groq
+
+# Optional: point at your local server instead of the default HF Space
+export BASE_URL=http://localhost:8000
+
 SEEDS=0,1,2 DIFFICULTIES=light,medium,heavy python run_llm_eval.py
 ```
 
-**Live environment**: [huggingface.co/spaces/nik-55/medchain-openenv-final-round](https://huggingface.co/spaces/nik-55/medchain-openenv-final-round)
+Stdout emits structured lines you can grep:
 
-**Training notebook**: download [`train_colab.py`](https://github.com/nik-55/medchain-openenv-final-round/blob/master/train_colab.py) and open in Google Colab (File → Upload). Needs a T4 GPU runtime. Uses `# %%` cell markers.
-
-**WandB training run**: [view live metrics →](https://api.wandb.ai/links/nikm5502-nikhil-mahajna/5pri4ooa)
+```
+[START] task=multi_actor_coordination env=medchain model=openai/gpt-oss-120b:groq
+[STEP]  step=1 action=read_inbox({}) reward=0.01 done=false error=null
+[STEP]  step=2 action=view_requests({}) reward=0.02 done=false error=null
+...
+[END]   success=true steps=47 score=0.681 rewards=0.01,0.02,...
+[BREAKDOWN] network_service_level=0.82 critical_service_level=0.91 ...
+```
 
 ---
 
@@ -78,27 +243,27 @@ SEEDS=0,1,2 DIFFICULTIES=light,medium,heavy python run_llm_eval.py
 
 Wards are scripted by default (deterministic, no API key needed). Each has a personality — a probability of inflating requests, how aggressively they defend padding when challenged, and a fluctuating reputation score that carries across rounds.
 
-| Ward | Priority | Padding behaviour | Backs down when challenged |
+| Ward | Priority | Padding behaviour | Verdict accepted on escalation |
 |---|---|---|---|
-| ICU | 1.0 | Almost never pads | ~95% |
-| ER | 0.7 | Pads moderately; defends real surges | ~55% |
-| General | 0.3 | Chronically over-orders | ~90% |
+| ICU | 1.0 | Almost never pads | Almost always honest — escalation rarely needed |
+| ER | 0.7 | Pads moderately; defends real surges | Verdict binding regardless; real surges get APPROVE |
+| General | 0.3 | Chronically over-orders | REDUCE/DENY verdicts common and correct |
 
 Set `WARD_ACTOR_MODE=llm` to activate LLM-backed ward dialogue for richer storytelling.
 
-### Five Siloed Enterprise Systems
+### Five Enterprise Systems
 
-This is the core of the World Modeling challenge. Each system returns different information with different reliability guarantees — exactly like real enterprise ops.
+Each of the five systems the agent interacts with returns different information with different reliability guarantees — and a strong agent knows which to trust for what.
 
-| System | Tools | Quirk |
+| System | Tools | Characteristic |
 |---|---|---|
-| ERP Oracle | `erp_oracle_get_inventory`, `erp_oracle_get_pipeline` | **Stale by 1 round** — authoritative but lagged |
-| WMS | `wms_scan_inventory` | **Live but ±5% noise** per lot |
-| Supplier Portal | `supplier_portal_request_quote`, `supplier_portal_get_quote` | **Async** — quote resolves next round |
-| Finance SAP | `finance_sap_get_budget`, `finance_sap_request_approval` | **Approval gate** for POs > $10k |
-| Ward Messaging | `messaging_send_to_ward` | Outbound comms; ward replies in-character |
+| ERP Oracle | `erp_oracle_get_inventory`, `erp_oracle_get_pipeline` | **Authoritative but one round lagged** — reflects last round's state |
+| WMS | `wms_scan_inventory` | **Live but ±5% noise** per lot — cross-reference with ERP for reconciliation |
+| Supplier Portal | `supplier_portal_request_quote`, `supplier_portal_get_quote` | **Async** — request this round, quote arrives next round |
+| Finance SAP | `finance_sap_get_budget`, `finance_sap_request_approval` | **Approval gate** for POs > $10k — file justification before submitting |
+| Ward Messaging | `messaging_send_to_ward` | Outbound comms; wards respond in-character based on their persona |
 
-A strong agent reconciles stale ERP against noisy WMS, plans ahead for async quotes, and files coherent justifications for large POs before the finance gate rejects them.
+A strong agent reconciles the ERP view against the live WMS scan, plans ahead for async supplier quotes, and files coherent justifications before the finance gate rejects a large PO.
 
 ### The Audit-and-Review Loop
 
@@ -145,7 +310,7 @@ Per-step shaping rewards guide exploration during training (read_inbox +0.01, va
 ### Episode Shape
 
 - 8 rounds × 2 simulated days each
-- 21 MCP tools across 5 enterprise silos
+- 21 MCP tools across 5 enterprise systems
 - FEFO inventory, lot expiry, ER surge events, supplier disruptions, product recalls, cold-chain breaches
 - Synthetic 8-round ward history (seeded, deterministic) for each episode
 - Ward reputations and hoarding pressure evolve round-to-round
@@ -195,6 +360,8 @@ The biggest practical problem. An 8-round episode with 20 tool calls per round a
 
 Qwen3.5 is a hybrid model (18 GatedDeltaNet SSM layers + 6 standard attention layers). Several non-obvious behaviours tripped us up:
 
+- **Two distinct tool-call formats, both legitimate.** When you pass tool schemas via `tools=` to `apply_chat_template`, the chat template injects a `<tools>` block and the model produces its **native XML format**: `<tool_call><function=NAME><parameter=KEY>value</parameter></function></tool_call>`. When no `tools=` is passed (our training setup), the model falls back to a JSON format: `<tool_call>{"name": "...", "arguments": {...}}</tool_call>`. Both are valid — the XML one is what the template was designed around; the JSON one is what the model learns from prompted examples. `check_qwen.py` tests parsers for both.
+- `<tool_call>` is **not a special token** — `skip_special_tokens=True` strips `<|im_end|>` and `<think>` but preserves `<tool_call>`. This matters for the training decode path.
 - `enable_thinking=False` still emits an empty `<think>\n\n</think>` stub before the response. We initially stripped this as malformed output before realising it's by design.
 - `pad_token_id` (248044) and `eos_token_id` (248046) are different. TRL convention is `pad_token_id=eos_token_id` in `generate()` — following this blindly breaks batched generation.
 - The 18 Conv1d layers inside GatedDeltaNet blocks are **not quantized** by bitsandbytes (they stay in compute dtype). Our initial VRAM estimates were off because we counted them as quantized.
@@ -222,67 +389,16 @@ FastAPI (server/app.py)
 
 21 MCP tools registered via FastMCP. Dispatch is `getattr(sim, tool_name)(**args)` — any new tool added to `MedchainSimulation` is immediately callable without additional wiring.
 
----
-
-## File Structure
-
-```
-openenv-hack/
-├── train_colab.py            ← MAIN training notebook (run in Colab/Kaggle)
-├── run_llm_eval.py           ← benchmark any OpenAI-compatible model
-├── train.py                  ← shared training helpers (SYSTEM_PROMPT, parse_tool_calls, etc.)
-├── client.py                 ← OpenEnv client (MedchainEnv)
-├── models.py                 ← Pydantic Action/Observation/State models
-├── config.py                 ← shared hyperparameters (GPU target, batch size, LoRA)
-├── openenv.yaml              ← OpenEnv manifest
-├── Dockerfile                ← server container
-│
-├── server/
-│   ├── simulation.py         ← core simulation engine, all 21 tool methods
-│   ├── grader.py             ← 10-component deterministic reward formula
-│   ├── tasks.py              ← task configs, ward personas, events
-│   ├── ward_actor.py         ← scripted/LLM ward actors
-│   ├── clinical_arbiter.py   ← binding-verdict clinical review board
-│   ├── medchain_env_environment.py  ← OpenEnv MCP wrapper
-│   ├── prompts.py            ← inference system prompt + full tool schemas
-│   └── llm_client.py         ← shared OpenAI-compatible client
-│
-├── train/
-│   ├── train_hf_jobs.py      ← HF Jobs cloud training (A100, UV PEP 723)
-│   ├── train_hf_jobs_offline.py  ← offline variant (pre-collected rollouts)
-│   ├── collect_rollouts.py   ← CPU-only rollout collection for offline training
-│   ├── evaluate.py           ← held-out eval (seeds 50–59, 90 episodes)
-│   ├── run_trained_model.py  ← run a checkpoint via the OpenEnv server
-│   └── check_qwen.py         ← 72-check Qwen3.5 sanity script (CPU-safe)
-│
-└── media/
-    ├── training_rewards_steptime.png
-    └── training_loss_lr_gradnorm.png
-```
-
----
-
-## Configuration
-
-| Env var | Default | Effect |
-|---|---|---|
-| `WARD_ACTOR_MODE` | `scripted` | Set `llm` to activate LLM ward dialogue |
-| `ARBITER_MODE` | `scripted` | Set `llm` to activate LLM clinical arbiter |
-| `HF_TOKEN` / `API_KEY` | — | Required for any LLM mode or inference eval |
-| `API_BASE_URL` | `https://router.huggingface.co/v1` | OpenAI-compatible endpoint |
-| `MODEL_NAME` | `openai/gpt-oss-20b:groq` | Model for `run_llm_eval.py` |
-| `WARD_MODEL_NAME` | inherits `MODEL_NAME` | Ward actor model in LLM mode |
-
 ## Determinism
 
 Two episodes with the same `seed`, `WARD_ACTOR_MODE=scripted`, `ARBITER_MODE=scripted` produce **byte-identical reward decompositions**. This is what makes GRPO training well-defined: the reward function is a pure function of `(seed, actions)`.
 
 ---
 
-## Resources
+## Hackathon Experience
 
-- **Environment (HF Space)**: [huggingface.co/spaces/nik-55/medchain-openenv-final-round](https://huggingface.co/spaces/nik-55/medchain-openenv-final-round)
-- **Blog post**: [blog.md on GitHub](https://github.com/nik-55/medchain-openenv-final-round/blob/master/blog.md)
-- **Training notebook**: [train_colab.py on GitHub](https://github.com/nik-55/medchain-openenv-final-round/blob/master/train_colab.py)
-- **WandB training run**: [https://api.wandb.ai/links/nikm5502-nikhil-mahajna/5pri4ooa](https://api.wandb.ai/links/nikm5502-nikhil-mahajna/5pri4ooa)
-- **OpenEnv framework**: [github.com/openenv/openenv](https://github.com/openenv/openenv)
+This hackathon turned out to be one of the most meaningful learning experiences I've had. RL was always something I understood at an abstract level — going through this challenge made it concrete and real. Designing a reward function that can't be gamed, thinking carefully about what the agent actually observes vs. what the simulation knows, debugging why GRPO produces the training dynamics it does — all of that clicked in a way that reading papers alone never managed. I'm genuinely planning to keep building RL environments after the hackathon ends.
+
+The organizers were responsive throughout and a pleasure to work with. The onsite event at Scaler School of Technology, Bangalore was a fantastic experience — handling that many participants operationally takes serious logistics and coordination. Maybe one day LLMs will manage event ops at this scale, but for now a huge thank you to the entire SST team for pulling it off.
+
+A big round of thanks to **Meta PyTorch**, **Hugging Face**, and **Scaler School of Technology** for organizing this and giving us the opportunity to build something real. I hope PyTorch and HuggingFace run more hackathons like this — they're exactly the kind of event that turns reading-about-RL into actually-doing-RL.

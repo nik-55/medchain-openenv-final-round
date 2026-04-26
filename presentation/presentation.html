@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MedChain — OpenEnv India 2026</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f0f14; color: #e0e0e0; }
+
+.slide { display: none; width: 100vw; height: 100vh; padding: 48px 72px; flex-direction: column; justify-content: center; overflow: hidden; }
+.slide.active { display: flex; }
+
+/* title */
+.slide-title { background: #0f0f14; text-align: center; align-items: center; }
+.slide-title h1 { font-size: 3.2rem; color: #7eb8f7; margin-bottom: 12px; }
+.slide-title .sub { font-size: 1.2rem; color: #888; margin-bottom: 8px; }
+
+h2 { font-size: 1.7rem; color: #7eb8f7; margin-bottom: 28px; }
+
+/* cards */
+.cards { display: grid; gap: 16px; }
+.cards-3 { grid-template-columns: repeat(3, 1fr); }
+.cards-2 { grid-template-columns: repeat(2, 1fr); }
+.cards-5 { grid-template-columns: repeat(5, 1fr); }
+
+.card {
+  background: #1a1a28;
+  border: 1px solid #2a2a3a;
+  border-radius: 8px;
+  padding: 20px;
+}
+.card .icon { font-size: 2rem; margin-bottom: 10px; }
+.card h3 { font-size: 1rem; color: #fff; margin-bottom: 8px; }
+.card p, .card li { font-size: 0.85rem; color: #aaa; line-height: 1.6; }
+.card ul { padding-left: 16px; }
+.card.accent { border-color: #7eb8f7; }
+.card .stat { font-size: 2rem; font-weight: 700; color: #7eb8f7; }
+.card .label { font-size: 0.8rem; color: #888; margin-top: 4px; }
+
+/* highlight row */
+.highlight { background: #1a2a1a; border-color: #4caf50; }
+
+/* tag */
+.tag { display: inline-block; background: #1e2030; color: #98d8ff; border: 1px solid #2a3050; border-radius: 3px; padding: 2px 8px; font-size: 0.78rem; font-family: monospace; margin: 2px; }
+
+code { background: #1e2030; color: #98d982; padding: 2px 6px; border-radius: 3px; font-family: monospace; font-size: 0.85em; }
+
+pre { background: #141420; border: 1px solid #2a2a3a; border-radius: 6px; padding: 16px 20px; font-family: monospace; font-size: 0.78rem; line-height: 1.8; color: #98d982; overflow-x: auto; }
+
+blockquote { border-left: 3px solid #7eb8f7; padding: 10px 16px; background: #1e2030; border-radius: 0 4px 4px 0; font-size: 0.88rem; color: #ccc; margin-top: 16px; }
+
+/* reward bar */
+.reward-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; font-size: 0.85rem; }
+.reward-bar .pct { color: #7eb8f7; font-weight: 700; width: 42px; flex-shrink: 0; }
+.reward-bar .bar-bg { flex: 1; background: #1e2030; border-radius: 4px; height: 10px; }
+.reward-bar .bar-fill { background: #7eb8f7; height: 10px; border-radius: 4px; }
+.reward-bar .desc { color: #aaa; width: 260px; flex-shrink: 0; }
+
+/* controls */
+#controls { position: fixed; bottom: 18px; right: 18px; display: flex; gap: 8px; z-index: 100; }
+#controls button { background: #1e1e2e; color: #ccc; border: 1px solid #333; padding: 7px 14px; cursor: pointer; font-size: 13px; border-radius: 4px; }
+#controls button:hover { background: #2a2a3a; }
+#counter { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); color: #555; font-size: 12px; z-index: 100; }
+
+@media print {
+  body { background: #fff; color: #000; }
+  #controls, #counter { display: none; }
+  .slide { display: flex !important; height: auto; min-height: 100vh; page-break-after: always; background: #fff !important; }
+  h2 { color: #1a3a8a; }
+  .slide-title h1 { color: #1a3a8a; }
+  .card { background: #f8f8f8; border-color: #ddd; }
+  pre { background: #f4f4f4; color: #2a6a2a; }
+  code { background: #f0f0f0; color: #2a6a2a; }
+  .reward-bar .bar-bg { background: #eee; }
+  .reward-bar .bar-fill { background: #1a3a8a; }
+}
+</style>
+</head>
+<body>
+
+<!-- 1: Title -->
+<div class="slide slide-title active">
+  <h1>MedChain</h1>
+  <p class="sub">Hospital Supply Chain Coordination</p>
+  <p style="color:#555; margin-top:20px; font-size:0.95rem">OpenEnv India 2026 Hackathon · Finals · Professional Tasks: World Modeling (Enterprise)</p>
+</div>
+
+<!-- 2: The Job -->
+<div class="slide">
+  <h2>The Job</h2>
+  <p style="margin-bottom:20px; color:#aaa">It's 2 AM. You're the central pharmacy coordinator for a three-ward hospital.</p>
+  <div class="cards cards-3" style="margin-bottom:20px">
+    <div class="card">
+      <div class="icon">🏥</div>
+      <h3>ICU</h3>
+      <p>Needs packed red blood cells for a patient going into surgery in 4 hours.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🚨</div>
+      <h3>ER</h3>
+      <p>Reporting a mass-casualty event. Requesting 3× normal blood and epinephrine — needs evidence-based validation before allocation.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🏨</div>
+      <h3>General Ward</h3>
+      <p>Requesting antibiotics. Clinical evidence and usage history needed to determine the right allocation level.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 3: MedChain simulation -->
+<div class="slide">
+  <h2>What We're Simulating — MedChain</h2>
+  <div class="cards cards-3" style="margin-bottom:20px">
+    <div class="card">
+      <div class="stat">3</div>
+      <div class="label">Wards with distinct clinical profiles</div>
+      <p style="margin-top:10px">Usage history and reputation carry across rounds. Evidence-grounded allocations improve trust over time.</p>
+    </div>
+    <div class="card">
+      <div class="stat">21</div>
+      <div class="label">MCP tools across 5 enterprise silos</div>
+      <p style="margin-top:10px">Each system has its own constraints, latency, and failure mode.</p>
+    </div>
+    <div class="card">
+      <div class="stat">8</div>
+      <div class="label">Rounds per episode (2 sim days each)</div>
+      <p style="margin-top:10px">Decisions in round 3 directly shape what round 4 looks like.</p>
+    </div>
+  </div>
+  <div class="cards cards-2">
+    <div class="card">
+      <h3>Scripted Ward Actors</h3>
+      <p>Each ward has tracked SKUs, usage history, and clinical context. Deterministic from seed — byte-identical rewards across runs. No LLM judge anywhere.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 4: Why Hard -->
+<div class="slide">
+  <h2>Why It's Hard to Reason About</h2>
+  <div class="cards cards-3" style="margin-bottom:16px">
+    <div class="card">
+      <div class="icon">🔀</div>
+      <h3>Multi-source reconciliation</h3>
+      <p>ERP stale −1 round. WMS live ±5% noise. Models pick one and act on it.</p>
+    </div>
+    <div class="card">
+      <div class="icon">📈</div>
+      <h3>Ambiguous demand signals</h3>
+      <p>ER spikes can be genuine MCI events or estimation error. Census and acuity evidence is required to allocate correctly.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🔁</div>
+      <h3>Multi-step governance</h3>
+      <p><code>request_evidence → escalate → cite in rationale</code> — models start the loop and don't finish it.</p>
+    </div>
+  </div>
+  <div class="cards cards-2">
+    <div class="card">
+      <div class="icon">⏳</div>
+      <h3>Async temporal planning</h3>
+      <p>Supplier quotes take 1 round to resolve. Request at round 5 for a round-6 need → you created the stockout.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🚧</div>
+      <h3>Finance gate sequencing</h3>
+      <p>POs &gt;$10k need pre-approval before submission. Models submit optimistically and wonder why it bounced.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 5: Tools & Actors -->
+<div class="slide">
+  <h2>Tools Available to the Agent</h2>
+  <div class="cards cards-5" style="margin-bottom:16px">
+    <div class="card">
+      <h3>📊 ERP Oracle</h3>
+      <p style="margin-bottom:8px; color:#f97316">Stale by 1 round</p>
+      <span class="tag">get_inventory</span><span class="tag">get_pipeline</span>
+    </div>
+    <div class="card">
+      <h3>📦 WMS</h3>
+      <p style="margin-bottom:8px; color:#f97316">Live ±5% noise</p>
+      <span class="tag">scan_inventory</span>
+    </div>
+    <div class="card">
+      <h3>🏭 Supplier</h3>
+      <p style="margin-bottom:8px; color:#f97316">Async, next round</p>
+      <span class="tag">request_quote</span><span class="tag">get_quote</span>
+    </div>
+    <div class="card">
+      <h3>💰 Finance SAP</h3>
+      <p style="margin-bottom:8px; color:#f97316">Gate for PO &gt;$10k</p>
+      <span class="tag">get_budget</span><span class="tag">request_approval</span>
+    </div>
+    <div class="card">
+      <h3>💬 Messaging</h3>
+      <p style="margin-bottom:8px; color:#aaa">Free-form</p>
+      <span class="tag">send_to_ward</span>
+    </div>
+  </div>
+  <div class="cards cards-3">
+    <div class="card">
+      <h3>Coordination</h3>
+      <span class="tag">get_round_briefing</span><span class="tag">view_requests</span><span class="tag">read_inbox</span><span class="tag">submit_allocation_plan</span><span class="tag">advance_round</span>
+    </div>
+    <div class="card">
+      <h3>Audit & Governance</h3>
+      <span class="tag">request_evidence</span><span class="tag">escalate_to_clinical_review</span>
+    </div>
+    <div class="card">
+      <h3>Procurement</h3>
+      <span class="tag">submit_po</span><span class="tag">file_justification</span><span class="tag">quarantine_lot</span>
+    </div>
+  </div>
+</div>
+
+<!-- 6: Episode example -->
+<div class="slide">
+  <h2>A Full Round: MCI Surge in the ER</h2>
+  <p style="margin-bottom:12px; color:#aaa">Round 5, heavy difficulty. Inbox arrives with a mass-casualty alert. ER is requesting 3× blood products and epinephrine.</p>
+<pre>
+read_inbox()
+  → MCI alert: 23 trauma patients admitted overnight
+  → Supplier disruption: BLOOD-RBC lead time extended by 1 round
+
+view_requests()
+  → ward_er:      BLOOD-RBC x38, BLOOD-PLT x18, EPI-1MG x60
+  → ward_icu:     BLOOD-RBC x12, BLOOD-FFP x8   (routine)
+  → ward_general: ANTIBIO-01 x130, IV-SAL-500 x90
+
+erp_oracle_get_inventory()    → BLOOD-RBC: 18 units  (as of yesterday)
+wms_scan_inventory()          → BLOOD-RBC: 14 units  (live — overnight consumption)
+erp_oracle_get_pipeline()     → 20 units arriving next round  (pre-ordered round 4)
+
+finance_sap_get_budget()      → $42,300 remaining  |  ER blood order est. $14,800
+
+request_evidence("ward_er", "BLOOD-RBC")
+  → census: 23 trauma admissions  |  acuity: critical  |  active MCI protocol: YES
+  → consumption last 12h: 11 units already used
+
+finance_sap_request_approval(amount=14800, justification="MCI protocol active,
+  23 trauma patients, 11 units consumed overnight, pipeline delayed by disruption")
+  → ticket: FIN-0047  (pending)
+
+supplier_portal_request_quote("MEDLINE", "BLOOD-RBC", qty=40, priority="urgent")
+
+submit_allocation_plan(
+  plan: ER gets 14 units now + priority on incoming pipeline
+  rationale: "MCI confirmed via census and acuity data. 14 units covers
+  next 24h at observed consumption rate. Pipeline 20 units arriving round 6."
+)
+
+submit_po(supplier="MEDLINE", sku="BLOOD-RBC", qty=40, approval_ref="FIN-0047")
+
+advance_round()
+</pre>
+  <div class="cards cards-3" style="margin-top:10px">
+    <div class="card highlight"><h3>Inventory reconciliation</h3><p>ERP said 18, WMS said 14 — overnight consumption. Pipeline awareness prevented over-ordering.</p></div>
+    <div class="card highlight"><h3>Finance gate handled</h3><p>Budget checked, approval filed before PO. Quote requested for next round restocking.</p></div>
+    <div class="card"><h3>Evidence-grounded rationale</h3><p>Census + acuity cited directly. audit_score credits citation, not just retrieval.</p></div>
+  </div>
+</div>
+
+<!-- 7: Architecture -->
+<div class="slide">
+  <h2>Architecture &amp; Workflow</h2>
+  <div style="flex:1; display:flex; gap:24px; align-items:stretch; min-height:0">
+    <div style="flex:1; display:flex; align-items:center; justify-content:center">
+      <div id="mermaid-out" style="width:100%"></div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:12px; width:240px; justify-content:center">
+      <div class="card"><h3>Episode shape</h3><p>8 rounds × ~15 tool calls · Context reset after each advance_round</p></div>
+      <div class="card"><h3>Determinism</h3><p>Fixed seed + scripted actors → byte-identical rewards. No LLM judge.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- 8: Rewards -->
+<div class="slide">
+  <h2>How Rewards Are Given</h2>
+  <p style="margin-bottom:18px; color:#aaa">Fully deterministic — computed from SimState</p>
+  <div class="reward-bar"><span class="pct">25%</span><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div><span class="desc">network service level</span></div>
+  <div class="reward-bar"><span class="pct">18%</span><div class="bar-bg"><div class="bar-fill" style="width:72%"></div></div><span class="desc">critical service level (ICU + ER blood)</span></div>
+  <div class="reward-bar"><span class="pct">18%</span><div class="bar-bg"><div class="bar-fill" style="width:72%"></div></div><span class="desc">allocation accuracy</span></div>
+  <div class="reward-bar"><span class="pct">12%</span><div class="bar-bg"><div class="bar-fill" style="width:48%"></div></div><span class="desc">event response (MCI · recall · cold-chain)</span></div>
+  <div class="reward-bar"><span class="pct">7%</span><div class="bar-bg"><div class="bar-fill" style="width:28%"></div></div><span class="desc">budget efficiency</span></div>
+  <div class="reward-bar"><span class="pct">5%</span><div class="bar-bg"><div class="bar-fill" style="width:20%"></div></div><span class="desc">audit score — evidence cited in rationale</span></div>
+  <div class="reward-bar"><span class="pct">5%</span><div class="bar-bg"><div class="bar-fill" style="width:20%"></div></div><span class="desc">approval workflow (finance gates)</span></div>
+  <div class="reward-bar"><span class="pct">−15%</span><div class="bar-bg"><div class="bar-fill" style="width:60%; background:#e57373"></div></div><span class="desc">justification penalty (cap)</span></div>
+  <blockquote style="margin-top:16px"><strong>Shaping bonuses:</strong> <code>correct escalation +0.05</code> · <code>read_inbox +0.01</code> · <code>first enterprise system use +0.005</code> · <code>frivolous escalation −0.03</code></blockquote>
+</div>
+
+<!-- 9: GRPO -->
+<div class="slide">
+  <h2>Improving the Agent with GRPO</h2>
+  <div class="cards cards-3" style="margin-bottom:18px">
+    <div class="card">
+      <h3>Model</h3>
+      <p>Qwen3.5-2B · 4-bit NF4 + LoRA (r=16) · T4 via Google Colab</p>
+    </div>
+    <div class="card">
+      <h3>Why GRPO?</h3>
+      <p>Prompting describes the workflow. Only RL teaches the model to <em>value</em> actions whose consequences arrive 2 rounds later.</p>
+    </div>
+    <div class="card">
+      <h3>Setup</h3>
+      <p>G=4 · B=8 → <strong>32 live episodes/step</strong><br>No static dataset — trains on real environment</p>
+    </div>
+  </div>
+  <div class="cards cards-4" style="grid-template-columns: repeat(4,1fr)">
+    <div class="card">
+      <div class="stat" style="font-size:1.4rem">~0.41</div>
+      <div class="label">Rubber-stamp baseline</div>
+    </div>
+    <div class="card">
+      <div class="stat" style="font-size:1.4rem">~0.47</div>
+      <div class="label">Discount-General heuristic</div>
+    </div>
+    <div class="card highlight">
+      <div class="stat" style="font-size:1.4rem; color:#4caf50">~0.35</div>
+      <div class="label">Trained Qwen3.5-2B (23 steps)</div>
+    </div>
+    <div class="card">
+      <div class="stat" style="font-size:1.4rem">~0.70</div>
+      <div class="label">Frontier model, full loop</div>
+    </div>
+  </div>
+  <p style="margin-top:16px; color:#aaa; font-size:0.88rem">Reward mean 0.13 → 0.35 over 23 steps. Compute-budget limited — clear headroom. <strong>Next:</strong> per-turn reward signals · async episode execution · full Tier-1 tool surface.</p>
+</div>
+
+<!-- 10: Thanks -->
+<div class="slide slide-title">
+  <h1>Thank You</h1>
+  <p class="sub" style="margin-top:12px">MedChain — OpenEnv India 2026, Finals</p>
+  <p style="margin-top:32px; color:#555; font-size:0.9rem">Built with OpenEnv · HuggingFace TRL (GRPO) · Qwen3.5-2B</p>
+</div>
+
+<div id="controls">
+  <button onclick="prev()">&#8592;</button>
+  <button onclick="next()">&#8594;</button>
+  <button onclick="toggleFs()">&#x26F6;</button>
+  <button onclick="window.print()">&#128438;</button>
+</div>
+<div id="counter"></div>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ theme: 'dark' });
+  const diagram = `flowchart LR
+    START([Start]) --> B[Round Opens]
+    B --> W[Wards Submit Requests]
+    W --> D[Briefing and Inbox]
+    D --> I[Investigate ERP and WMS and Supplier]
+    I --> AU{Evidence needed?}
+    AU -->|Yes| E[Request Evidence]
+    E --> ESC[Clinical Review]
+    ESC --> P[Allocation Plan]
+    AU -->|No| P
+    P --> ADV[Advance Round]
+    ADV -->|next| B
+    ADV -->|done| R([Reward])`;
+  const { svg } = await mermaid.render('arch', diagram);
+  const el = document.getElementById('mermaid-out');
+  el.innerHTML = svg;
+  const svgEl = el.querySelector('svg');
+  svgEl.style.width = '100%';
+  svgEl.style.height = 'auto';
+  svgEl.style.maxHeight = '52vh';
+</script>
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let cur = 0;
+  function show(n) {
+    slides[cur].classList.remove('active');
+    cur = (n + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    document.getElementById('counter').textContent = (cur+1) + ' / ' + slides.length;
+  }
+  function next() { show(cur+1); }
+  function prev() { show(cur-1); }
+  function toggleFs() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight','ArrowDown',' '].includes(e.key)) next();
+    if (['ArrowLeft','ArrowUp'].includes(e.key)) prev();
+    if (e.key==='f'||e.key==='F') toggleFs();
+  });
+  show(0);
+</script>
+</body>
+</html>

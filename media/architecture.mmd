@@ -1,0 +1,121 @@
+flowchart TD
+    %% ── Episode kick-off ──────────────────────────────────────────────
+    START([Episode Start\nseed · difficulty]) --> INIT[Initialise Simulation\nFEFO inventory · supplier catalogue\nsynthetic 8-round ward history]
+    INIT --> ROUND_START
+
+    %% ── Round loop ────────────────────────────────────────────────────
+    subgraph ROUND["Round  (×8, each = 2 simulated days)"]
+        direction TB
+
+        ROUND_START([Round Opens]) --> EVENTS
+
+        subgraph EVENTS["Events fired into Inbox"]
+            direction LR
+            E1[ER Surge / MCI\n2.5–3× demand spike]
+            E2[Supplier Disruption\nlead-time blow-out]
+            E3[Product Recall\nquarantine window]
+            E4[Cold-chain Breach\nlot integrity risk]
+        end
+
+        EVENTS --> WARD_REQ
+
+        subgraph WARD_REQ["Wards submit requests"]
+            direction LR
+            ICU["ward_icu\nhigh priority\nrarely pads"]
+            ER["ward_er\nmed priority\npads for resilience"]
+            GEN["ward_general\nlow priority\nchronic padding"]
+        end
+
+        WARD_REQ --> AGENT
+
+        subgraph AGENT["Agent — MedChain Coordinator"]
+            direction TB
+
+            BRIEF["get_round_briefing\nread_inbox · view_requests"]
+
+            BRIEF --> INVEST
+
+            subgraph INVEST["Investigate"]
+                direction LR
+                H["query_ward_history\npast 8 rounds"]
+                ERP["erp_oracle_get_inventory\nerp_oracle_get_pipeline\nstale −1 round"]
+                WMS["wms_scan_inventory\nlive ±5% noise"]
+                SP["supplier_portal_request_quote\nsupplier_portal_get_quote"]
+                FIN["finance_sap_get_budget"]
+                MSG["messaging_send_to_ward"]
+            end
+
+            INVEST --> AUDIT
+
+            subgraph AUDIT["Audit loop"]
+                direction TB
+                REQ_EV["request_evidence\nusage data · expiry · census"]
+                REQ_EV --> DECISION{padding\nsuspected?}
+                DECISION -->|Yes| ESC["escalate_to_clinical_review\nbinding verdict"]
+                DECISION -->|No| ALLOC
+                ESC --> ALLOC
+            end
+
+            ALLOC["submit_allocation_plan\n+ rationale citing evidence"]
+
+            ALLOC --> PROCURE
+
+            subgraph PROCURE["Procurement (if needed)"]
+                direction LR
+                PO["submit_po"]
+                PO --> GATE{PO > $10k?}
+                GATE -->|Yes| SAPGATE["finance_sap_request_approval\n→ approval ticket"]
+                GATE -->|No| JUSTIF
+                SAPGATE --> JUSTIF
+                JUSTIF["file_justification"]
+            end
+
+            PROCURE --> QU
+            QU["quarantine_lot\n(if recall active)"]
+        end
+
+        QU --> ADV["advance_round"]
+
+        ADV --> CONSUME
+
+        subgraph CONSUME["Sim advances time"]
+            direction LR
+            C1[Wards consume stock\nFEFO lot draw-down]
+            C2[POs in transit delivered]
+            C3[Lots checked for expiry]
+            C4[Ward reputation updated\n↑ evidence-grounded\n↓ confirmed padding]
+        end
+
+        CONSUME --> ROUND_END{8 rounds\ndone?}
+        ROUND_END -->|No| ROUND_START
+    end
+
+    %% ── Episode end ───────────────────────────────────────────────────
+    ROUND_END -->|Yes| REWARD
+
+    subgraph REWARD["Terminal Reward  ∈ [0, 1]"]
+        direction LR
+        R1["0.30 network service level"]
+        R2["0.20 critical service level\nICU + ER blood products"]
+        R3["0.20 allocation accuracy\nper-ward surplus + stockout"]
+        R4["0.15 event response\nMCI · recall · coldchain"]
+        R5["0.10 budget efficiency"]
+        R6["0.05 waste control"]
+        R7["+ audit · approval · tool-discovery · briefing bonuses"]
+        RP["− justification penalty  (cap 0.15)"]
+    end
+
+    REWARD --> END([Episode End])
+
+    %% ── Styling ───────────────────────────────────────────────────────
+    classDef ward fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
+    classDef event fill:#fef3c7,stroke:#f59e0b,color:#78350f
+    classDef tool fill:#f0fdf4,stroke:#22c55e,color:#14532d
+    classDef reward fill:#fdf4ff,stroke:#a855f7,color:#581c87
+    classDef decision fill:#fff7ed,stroke:#f97316,color:#7c2d12
+
+    class ICU,ER,GEN ward
+    class E1,E2,E3,E4 event
+    class H,ERP,WMS,SP,FIN,MSG,REQ_EV,ESC,ALLOC,PO,JUSTIF,QU tool
+    class R1,R2,R3,R4,R5,R6,R7,RP reward
+    class DECISION,GATE decision
