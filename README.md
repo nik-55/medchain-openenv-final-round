@@ -20,6 +20,14 @@ tags:
 **Theme**: #3.1 Professional Tasks (World Modeling — Enterprise)  
 **Team**: Solo
 
+## Result
+
+**Top 100 team** at OpenEnv India 2026 Hackathon — Finals Round.
+
+![Certificate](presentation/certificate.png)
+
+---
+
 | Resource | Link |
 |---|---|
 | **GitHub repository** | [nik-55/medchain-openenv-final-round](https://github.com/nik-55/medchain-openenv-final-round) |
